@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,10 +18,10 @@ public class Project {
     private int id;
     @Column(name="project_name")
     private String name;
-    //@OneToOne
-    //private User owner;
-    //@ManyToMany
-    //private Set<User> members;
+    @OneToOne
+    private User owner;
+    @ManyToMany
+    private Set<User> members;
     @Column(name="project_category")
     private String category;
     @Column(name="tags")

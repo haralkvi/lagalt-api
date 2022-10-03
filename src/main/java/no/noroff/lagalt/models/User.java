@@ -22,6 +22,7 @@ public class User {
 
     private String password;
 
+    @ElementCollection
     private Set<String> skillSet;
 
     @OneToMany
