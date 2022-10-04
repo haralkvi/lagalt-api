@@ -17,10 +17,16 @@ public class User {
     @Column(name = "user_id")
     private int id;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false)
     private String name;
 
+    @Column(name = "user_email", unique = true)
+    private String email;
+
     private String password;
+
+    @Column(name = "user_desciption")
+    private String description;
 
     @ElementCollection
     private Set<String> skillSet;
@@ -35,4 +41,6 @@ public class User {
     private Set<Project> projectsHistory;
 
     private boolean admin;
+
+    private boolean hidden;
 }
