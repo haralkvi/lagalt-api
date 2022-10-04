@@ -1,6 +1,8 @@
 package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.models.Project;
+import no.noroff.lagalt.services.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,9 @@ import java.util.Collection;
 @RestController
 @RequestMapping(path = "api/v1/projects")
 public class ProjectController {
+
+    @Autowired
+    private ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<Collection<Project>> getAll() {
@@ -25,7 +30,7 @@ public class ProjectController {
     public ResponseEntity add(@RequestBody Project project) {
         Project proj = projectService.add(project);
         URI location = URI.create("projects/ " + project.getId());
-        
+
         return ResponseEntity.created(location).build();
     }
 
