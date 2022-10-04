@@ -17,7 +17,7 @@ public class Comment {
     @Column(name="comment_id")
     private int id;
 
-    @OneToOne
+    @ManyToOne
     public Project project;
 
     @OneToOne
