@@ -16,18 +16,31 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="project_id")
     private int id;
+
     @Column(name="project_name")
     private String name;
+
     @OneToOne
     private User owner;
+
     @ManyToMany
     private Set<User> members;
+
     @Column(name="project_category")
     private String category;
+
     @Column(name="tags")
     private String tags;
+
     @Column(name="summary")
     private String summary;
-    //@OneToMany(mappedBy = "")
-    //private Comments comments;
+
+    @OneToMany(mappedBy = "project")
+    private Set<Comment> comments;
+
+    @Column(name="project_image")
+    private String image;
+
+    @Column(name="project_link")
+    private String link;
 }

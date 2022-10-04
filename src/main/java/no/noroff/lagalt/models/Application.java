@@ -1,5 +1,6 @@
 package no.noroff.lagalt.models;
 
+
 import jdk.jfr.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,25 +10,27 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name="comment")
-public class Comment {
+@Table(name="application")
+public class Application {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="comment_id")
-    private int id;
-
-    @ManyToOne
-    public Project project;
+    @Column(name="application_id")
+    private int application_id;
 
     @OneToOne
-    public User user;
+    private User user;
 
-    @Column(name="text")
-    public String text;
+    @OneToOne
+    private Project project;
+
+    @Column(name="application_status")
+    private String status;
 
     @Timestamp
     public String time;
+
+
 
 
 }
