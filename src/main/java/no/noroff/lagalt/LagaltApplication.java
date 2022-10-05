@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LagaltApplication {
 
     public static void main(String[] args) {
+
+        System.out.println(System.getenv("DATASOURCE_URL"));
         SpringApplication.run(LagaltApplication.class, args);
     }
 
