@@ -37,9 +37,7 @@ public class ApplicationController {
         if (id != application.getApplication_id()) {
             return ResponseEntity.badRequest().build();
         }
-
         applicationService.update(application);
-
         return ResponseEntity.noContent().build();
     }
 
