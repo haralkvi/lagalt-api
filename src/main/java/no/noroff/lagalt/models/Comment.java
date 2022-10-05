@@ -25,7 +25,6 @@ public class Comment {
     @JoinColumn(name = "user_id")
     public User user;
 
-    @Column(name="text")
     public String text;
 
     @Timestamp

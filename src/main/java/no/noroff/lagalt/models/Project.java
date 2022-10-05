@@ -17,7 +17,7 @@ public class Project {
     @Column(name="project_id")
     private int id;
 
-    @Column(name="project_name")
+    @Column(name="project_name", nullable = false)
     private String name;
 
     @ManyToOne

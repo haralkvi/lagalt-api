@@ -20,7 +20,7 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String name;
 
-    @Column(name = "user_email", unique = true)
+    @Column(name = "user_email", unique = true, nullable = false)
     private String email;
 
     private String password;
@@ -50,6 +50,7 @@ public class User {
     )
     private Set<Project> projectsHistory;
 
+    @Column(nullable = false)
     private boolean admin;
 
     private boolean hidden;

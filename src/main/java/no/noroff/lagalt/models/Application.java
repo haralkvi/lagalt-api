@@ -29,6 +29,7 @@ public class Application {
     @Column(name="application_status")
     private String status;
 
+    @Column(nullable = false)
     @Timestamp
     public String time;
 
