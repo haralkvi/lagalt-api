@@ -18,9 +18,11 @@ public class Comment {
     private int id;
 
     @ManyToOne
+    @JoinColumn(name = "project_id")
     public Project project;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     public User user;
 
     @Column(name="text")

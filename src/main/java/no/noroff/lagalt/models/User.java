@@ -31,16 +31,32 @@ public class User {
     @ElementCollection
     private Set<String> skillSet;
 
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private Set<Project> projectsOwned;
 
     @ManyToMany
+    @JoinTable(
+            name = "user_projects_membership",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")}
+    )
     private Set<Project> projectsParticipated;
 
     @ManyToMany
+    @JoinTable(
+            name = "user_projects_click_history",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")}
+    )
     private Set<Project> projectsHistory;
 
     private boolean admin;
 
     private boolean hidden;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Application> applications;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
 }

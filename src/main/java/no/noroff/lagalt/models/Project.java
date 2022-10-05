@@ -20,11 +20,15 @@ public class Project {
     @Column(name="project_name")
     private String name;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "projectsOwned")
     private User owner;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "projectsParticipated")
     private Set<User> members;
+
+    @ManyToMany(mappedBy = "projectsHistory")
+    private Set<User> userViews;
 
     @Column(name="project_category")
     private String category;
@@ -43,4 +47,7 @@ public class Project {
 
     @Column(name="project_link")
     private String link;
+
+    @OneToMany(mappedBy = "project")
+    private Set<Application> applications;
 }

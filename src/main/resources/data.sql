@@ -1,5 +1,5 @@
 INSERT INTO person (admin, user_desciption, user_email, hidden, user_name, password)
-VALUES (false, 'test','smith@testx.com',false, 'John Smith', 'pro123');
+VALUES (false, 'test','smith@testx.com', false, 'John Smith', 'pro123');
 INSERT INTO project (project_category, project_image, project_link, project_name, summary, tags, owner_user_id)
 VALUES ('Musikk', 'placeholder', 'placeholder', 'Music of the Spheres', 'Godly sound', 'Christian, God',
         1);
@@ -11,11 +11,3 @@ INSERT INTO person (admin, user_desciption, user_email, hidden, user_name, passw
 VALUES (true, 'test2','smith2@test.com',false, 'John Smith2', 'pro234');
 INSERT INTO person (admin, user_desciption, user_email, hidden, user_name, password)
 VALUES (false, 'test3','smith3@test.com',true, 'John Smith3', 'pro345');
-INSERT INTO person_projects_history (user_user_id, projects_history_project_id) VALUES (1,1);
-INSERT INTO person_projects_owned (user_user_id, projects_owned_project_id) VALUES (1,2);
-INSERT INTO person_projects_participated (user_user_id, projects_participated_project_id) VALUES (3,1);
-INSERT INTO person_projects_participated (user_user_id, projects_participated_project_id) VALUES (3,2);
-INSERT INTO project_members (project_project_id, members_user_id) VALUES (1,2);
-INSERT INTO project_members (project_project_id, members_user_id) VALUES (1,3);
-INSERT INTO user_skill_set (user_user_id, skill_set)
-VALUES (2,'Admin-ing');
