@@ -50,4 +50,5 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private Set<Application> applications;
+
 }
