@@ -25,7 +25,7 @@ public class User {
 
     private String password;
 
-    @Column(name = "user_desciption")
+    @Column(name = "user_description")
     private String description;
 
     @ElementCollection
