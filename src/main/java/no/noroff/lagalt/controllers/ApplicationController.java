@@ -1,5 +1,7 @@
 package no.noroff.lagalt.controllers;
 
+import no.noroff.lagalt.mappers.UserGetDTO;
+import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-
+@RestController
+@RequestMapping(path = "movie-db/v1/franchises")
 public class ApplicationController {
 
     @Autowired
