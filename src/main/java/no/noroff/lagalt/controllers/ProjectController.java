@@ -1,8 +1,12 @@
 package no.noroff.lagalt.controllers;
 
+import no.noroff.lagalt.mappers.ProjectGetDTO;
+import no.noroff.lagalt.mappers.ProjectMapper;
+import no.noroff.lagalt.mappers.UserGetDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +20,27 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private ProjectMapper projectMapper;
+
     @GetMapping
-    public ResponseEntity<Collection<Project>> getAll() {
-        return ResponseEntity.ok(projectService.findAll());
+    public ResponseEntity<?> getAll() {
+        Collection<ProjectGetDTO> projects = projectMapper.projectToProjectDTO(projectService.findAll());
+        if (projects.size()>0){
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Project> getById(@PathVariable int id) {
-        return ResponseEntity.ok(projectService.findById(id));
+    public ResponseEntity<?> getById(@PathVariable int id) {
+        ProjectGetDTO project = projectMapper.projectToProjectDTO(projectService.findById(id));
+        if (project != null){
+            return new ResponseEntity<>(project, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
