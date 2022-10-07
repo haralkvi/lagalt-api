@@ -1,6 +1,7 @@
 package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.dtos.ApplicationGetDTO;
+import no.noroff.lagalt.dtos.ApplicationPostDTO;
 import no.noroff.lagalt.mappers.*;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;
@@ -42,11 +43,12 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Application> add(@RequestBody Application inputApplication) {
-        Application application = applicationService.add(inputApplication);
-        URI location = URI.create("applications/ " + inputApplication.getApplication_id());
-
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<?> add(@RequestBody ApplicationPostDTO inputApplication) {
+        Application application = applicationService.add(applicationMapper.applicationPostDTOtoApplication(inputApplication));
+        //URI location = URI.create("applications/ " + inputApplication.get
+        //TODO: hvordan bytte ut den over?
+        if(application != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
