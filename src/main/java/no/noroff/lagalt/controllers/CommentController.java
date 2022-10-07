@@ -1,8 +1,10 @@
 package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.dtos.CommentGetDTO;
+import no.noroff.lagalt.dtos.CommentPostDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.mappers.CommentMapper;
+import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +46,12 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody Comment inputComment) {
-        Comment comment = commentService.add(inputComment);
-        URI location = URI.create("comments/ " + inputComment.getId());
-
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
+        Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
+        //URI location = URI.create("applications/ " + inputApplication.get
+        //TODO: hvordan bytte ut den over?
+        if(comment != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
