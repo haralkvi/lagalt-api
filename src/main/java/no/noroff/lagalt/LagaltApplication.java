@@ -13,7 +13,7 @@ public class LagaltApplication {
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "Hello World!";
+        return "Lagalt API";
     }
 
     public static void main(String[] args) {
