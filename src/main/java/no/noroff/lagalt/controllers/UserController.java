@@ -1,6 +1,6 @@
 package no.noroff.lagalt.controllers;
 
-import no.noroff.lagalt.mappers.UserGetDTO;
+import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;

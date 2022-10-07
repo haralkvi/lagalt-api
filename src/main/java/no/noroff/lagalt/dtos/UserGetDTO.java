@@ -1,4 +1,4 @@
-package no.noroff.lagalt.mappers;
+package no.noroff.lagalt.dtos;
 
 import lombok.Data;
 

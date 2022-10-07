@@ -1,8 +1,7 @@
 package no.noroff.lagalt.controllers;
 
-import no.noroff.lagalt.mappers.ProjectGetDTO;
+import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
-import no.noroff.lagalt.mappers.UserGetDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;

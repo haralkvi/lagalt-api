@@ -1,5 +1,6 @@
 package no.noroff.lagalt.controllers;
 
+import no.noroff.lagalt.dtos.ApplicationGetDTO;
 import no.noroff.lagalt.mappers.*;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;

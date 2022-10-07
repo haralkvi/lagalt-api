@@ -1,5 +1,6 @@
 package no.noroff.lagalt.mappers;
 
+import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import org.mapstruct.Mapper;
