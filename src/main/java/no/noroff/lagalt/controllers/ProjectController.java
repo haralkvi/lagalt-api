@@ -1,7 +1,9 @@
 package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.dtos.ProjectGetDTO;
+import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
+import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +45,12 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity add(@RequestBody Project project) {
-        Project proj = projectService.add(project);
-        URI location = URI.create("projects/ " + project.getId());
-
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
+        Project project  = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
+        //URI location = URI.create("applications/ " + inputApplication.get
+        //TODO: hvordan bytte ut den over?
+        if(project != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
