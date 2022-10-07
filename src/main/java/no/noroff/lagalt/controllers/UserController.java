@@ -1,6 +1,7 @@
 package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.dtos.UserGetDTO;
+import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -43,15 +43,16 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody User inputUser) {
-        User user = userService.add(inputUser);
-        URI location = URI.create("users/ " + inputUser.getId());
-
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
+        User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
+        //URI location = URI.create("applications/ " + inputApplication.get
+        //TODO: hvordan bytte ut den over?
+        if(user != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity update(@RequestBody User user, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody User user, @PathVariable int id) {
         if (id != user.getId()) {
             return ResponseEntity.badRequest().build();
         }
