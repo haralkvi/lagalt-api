@@ -1,7 +1,9 @@
 package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.ApplicationGetDTO;
+import no.noroff.lagalt.dtos.ApplicationPostDTO;
 import no.noroff.lagalt.dtos.CommentGetDTO;
+import no.noroff.lagalt.dtos.CommentPostDTO;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
@@ -19,6 +21,8 @@ public abstract class CommentMapper {
     @Mapping(target = "user", source = "user", qualifiedByName = "userToId" )
     @Mapping(target = "project", source = "project", qualifiedByName = "projectToId")
     public abstract CommentGetDTO commentToCommentDTO(Comment comment);
+
+    public abstract Comment commentPostDTOtoComment(CommentPostDTO commentPostDTO);
 
     public Collection<CommentGetDTO> commentToCommentDTO(Collection<Comment> comments) {
         if (comments == null) {
