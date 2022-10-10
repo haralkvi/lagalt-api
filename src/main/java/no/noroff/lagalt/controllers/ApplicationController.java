@@ -68,9 +68,6 @@ public class ApplicationController {
         }
         applicationService.deleteById(id);
         return ResponseEntity.noContent().build();
-
-
     }
-
 
 }

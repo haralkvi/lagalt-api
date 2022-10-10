@@ -58,9 +58,16 @@ public class CommentController {
         if (id != comment.getId()) {
             return ResponseEntity.badRequest().build();
         }
-
         commentService.update(comment);
+        return ResponseEntity.noContent().build();
+    }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable int id){
+        if (id == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        commentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 

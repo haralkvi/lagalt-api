@@ -58,9 +58,16 @@ public class UserController {
         if (id != user.getId()) {
             return ResponseEntity.badRequest().build();
         }
-
         userService.update(user);
+        return ResponseEntity.noContent().build();
+    }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable int id){
+        if (id == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
