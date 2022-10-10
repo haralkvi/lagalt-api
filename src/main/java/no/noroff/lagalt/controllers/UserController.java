@@ -1,5 +1,9 @@
 package no.noroff.lagalt.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
@@ -23,6 +27,15 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
+    @Operation(summary = "Gets all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "All users received",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing received",
+                    content = @Content)
+    })
     @GetMapping
     public ResponseEntity<?> getAll() {
         Collection<UserGetDTO> users = userMapper.userToUserDTO(userService.findAll());
@@ -33,6 +46,15 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Gets a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user has been received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Specified user not found",
+                    content = @Content)
+    })
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         UserGetDTO user = userMapper.userToUserDTO(userService.findById(id));
@@ -43,6 +65,15 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Creates a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "User successfully created",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing created",
+                    content = @Content)
+    })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
@@ -53,14 +84,39 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Updates a specified user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing received",
+                    content = @Content)
+    })
     @PutMapping("{id}")
     public ResponseEntity<?> update(@RequestBody User user, @PathVariable int id) {
         if (id != user.getId()) {
             return ResponseEntity.badRequest().build();
         }
-
         userService.update(user);
+        return ResponseEntity.noContent().build();
+    }
 
+    @Operation(summary = "Deletes a specified user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "The user has been deleted",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The specified user does not exist",
+                    content = @Content)
+    })
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable int id){
+        if (id == 0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
