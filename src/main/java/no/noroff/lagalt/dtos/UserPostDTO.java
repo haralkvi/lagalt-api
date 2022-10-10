@@ -1,10 +1,10 @@
 package no.noroff.lagalt.dtos;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class UserPostDTO {
     private String name;
     private String email;
