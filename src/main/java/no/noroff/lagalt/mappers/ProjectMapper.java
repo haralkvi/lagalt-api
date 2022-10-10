@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class ProjectMapper {
@@ -19,6 +21,7 @@ public abstract class ProjectMapper {
     @Autowired
     UserService userService;
 
+    @Mapping(target = "members", source = "members", qualifiedByName = "usersToIds")
     @Mapping(target = "owner", source = "owner", qualifiedByName = "ownerToString")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
@@ -40,6 +43,15 @@ public abstract class ProjectMapper {
     String mapToString(User value){
         return value.getName();
     }
+
+    @Named("usersToIds")
+    Set<Integer> mapToInteger(Set<User> users) {
+        if(users == null)
+            return null;
+        return users.stream()
+                .map(User::getId).collect(Collectors.toSet());
+    }
+
 
     @Named("idToOwner")
     User mapToUser(int id){

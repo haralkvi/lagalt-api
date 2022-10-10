@@ -1,9 +1,7 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ApplicationPostDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
-import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import org.mapstruct.Mapper;
@@ -17,8 +15,9 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
-
-    @Mapping(target = "projectsOwned", source = "projectsOwned", qualifiedByName = "projectsToIds" )
+    @Mapping(target = "projectsParticipated", source = "projectsParticipated",qualifiedByName = "projectsToIds" )
+    @Mapping(target = "projectsHistory", source = "projectsHistory",qualifiedByName = "projectsToIds" )
+    @Mapping(target = "projectsOwned", source = "projectsOwned", qualifiedByName = "projectsToIds")
     public abstract UserGetDTO userToUserDTO(User user);
 
     public abstract User userPostDTOtoUser(UserPostDTO userPostDTO);
@@ -27,7 +26,7 @@ public abstract class UserMapper {
         if (users == null) {
             return null;
         }
-        Collection<UserGetDTO> list = new ArrayList<UserGetDTO>(users.size());
+        Collection<UserGetDTO> list = new ArrayList<>(users.size());
         for (User user : users) {
             list.add(userToUserDTO(user));
         }

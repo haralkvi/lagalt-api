@@ -11,12 +11,10 @@ public class UserGetDTO {
     private String name;
     private String email;
     private String description;
-    //private String skillSet;
+    private Set<String> skillSet;
     private Set<Integer> projectsOwned;
-    //legg til disse hvis nødvendig
-    //private Set<Integer> projectsHistory;
-    //private Set<Integer> projetsParticipated;
-    //skal disse være med?
+    private Set<Integer> projectsHistory;
+    private Set<Integer> projectsParticipated;
     private boolean hidden;
     private boolean admin;
 
