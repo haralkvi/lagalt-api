@@ -61,5 +61,16 @@ public class ApplicationController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable int id){
+        if (id == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        applicationService.deleteById(id);
+        return ResponseEntity.noContent().build();
+
+
+    }
+
 
 }
