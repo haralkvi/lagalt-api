@@ -47,7 +47,7 @@ public class CommentController {
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
         if(comment != null){
-            URI location = URI.create("applications/ " + comment.getId());
+            URI location = URI.create("comments/" + comment.getId());
             return ResponseEntity.created(location).build();
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

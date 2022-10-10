@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
         if(user != null){
-            URI location = URI.create("applications/ " + user.getId());
+            URI location = URI.create("users/" + user.getId());
             return ResponseEntity.created(location).build();
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

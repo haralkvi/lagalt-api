@@ -1,9 +1,7 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ApplicationPostDTO;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
-import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;
@@ -26,13 +24,12 @@ public abstract class ProjectMapper {
 
     @Mapping(target = "owner", source = "owner", qualifiedByName =  "idToOwner")
     public abstract Project projectPostDTOtoProject(ProjectPostDTO projectPostDTO);
-    //is it better to somehow use string here?
 
     public Collection<ProjectGetDTO> projectToProjectDTO(Collection<Project> projects) {
         if (projects == null) {
             return null;
         }
-        Collection<ProjectGetDTO> list = new ArrayList<ProjectGetDTO>(projects.size());
+        Collection<ProjectGetDTO> list = new ArrayList<>(projects.size());
         for (Project project : projects) {
             list.add(projectToProjectDTO(project));
         }
@@ -44,7 +41,7 @@ public abstract class ProjectMapper {
         return value.getName();
     }
 
-    @Named("idToUser")
+    @Named("idToOwner")
     User mapToUser(int id){
         return userService.findById(id);
     }
