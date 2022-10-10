@@ -2,9 +2,7 @@ package no.noroff.lagalt.controllers;
 
 import no.noroff.lagalt.dtos.CommentGetDTO;
 import no.noroff.lagalt.dtos.CommentPostDTO;
-import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.mappers.CommentMapper;
-import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +46,15 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
-        //URI location = URI.create("applications/ " + inputApplication.get
-        //TODO: hvordan bytte ut den over?
-        if(comment != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        if(comment != null){
+            URI location = URI.create("applications/ " + comment.getId());
+            return ResponseEntity.created(location).build();
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity update(@RequestBody Comment comment, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody Comment comment, @PathVariable int id) {
         if (id != comment.getId()) {
             return ResponseEntity.badRequest().build();
         }

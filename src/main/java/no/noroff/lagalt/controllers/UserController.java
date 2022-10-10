@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -45,9 +46,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
-        //URI location = URI.create("applications/ " + inputApplication.get
-        //TODO: hvordan bytte ut den over?
-        if(user != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        if(user != null){
+            URI location = URI.create("applications/ " + user.getId());
+            return ResponseEntity.created(location).build();
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

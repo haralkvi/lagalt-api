@@ -45,9 +45,10 @@ public class ApplicationController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ApplicationPostDTO inputApplication) {
         Application application = applicationService.add(applicationMapper.applicationPostDTOtoApplication(inputApplication));
-        //URI location = URI.create("applications/ " + inputApplication.get
-        //TODO: hvordan bytte ut den over?
-        if(application != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        if(application != null){
+            URI location = URI.create("applications/ " + application.getApplication_id());
+            return ResponseEntity.created(location).build();
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

@@ -3,7 +3,6 @@ package no.noroff.lagalt.controllers;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
-import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,20 +46,19 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
         Project project  = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
-        //URI location = URI.create("applications/ " + inputApplication.get
-        //TODO: hvordan bytte ut den over?
-        if(project != null)return new ResponseEntity<>(HttpStatus.CREATED);
+        if(project != null){
+            URI location = URI.create("projects/ " + project.getId());
+            return ResponseEntity.created(location).build();
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity update(@RequestBody Project project, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody Project project, @PathVariable int id) {
         if (id != project.getId()) {
             return ResponseEntity.badRequest().build();
         }
-
         projectService.update(project);
-
         return ResponseEntity.noContent().build();
     }
 
