@@ -31,26 +31,6 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-    // requires an actual Jwt in order to work
-    @GetMapping("info")
-    public ResponseEntity getLoggedInUserInfo(@AuthenticationPrincipal Jwt principal) {
-        Map<String, String> map = new HashMap<>();
-        map.put("subject/id", principal.getClaimAsString("sub"));
-        map.put("username", principal.getClaimAsString("preferred_username"));
-        map.put("email", principal.getClaimAsString("email"));
-        map.put("roles", String.valueOf(principal.getClaimAsStringList("roles")));
-        return ResponseEntity.ok(map);
-    }
-
-    // requires an actual Jwt in order to work
-    @GetMapping("current")
-    public ResponseEntity getCurrentlyLoggedInUser(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(
-                userService.findByUid(
-                        jwt.getClaimAsString("sub")
-                )
-        );
-    }
 
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
@@ -90,6 +70,24 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Gets a specific user by their uid")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user has been received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Specified user not found",
+                    content = @Content)
+    })
+    @GetMapping("current")
+    public ResponseEntity getByJwt(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(
+                userService.findByUid(
+                        jwt.getClaimAsString("sub")
+                )
+        );
+    }
+
     @Operation(summary = "Creates a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
@@ -109,13 +107,21 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Creates a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "User successfully created",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing created",
+                    content = @Content)
+    })
     @PostMapping("register")
-    public ResponseEntity addNewUserFromJwt(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity addByJwt(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.addByUid(jwt);
         URI uri = URI.create("api/v1/users/" + user.getUid());
         return ResponseEntity.created(uri).build();
     }
-
 
     @Operation(summary = "Updates a specified user")
     @ApiResponses(value = {
@@ -131,6 +137,27 @@ public class UserController {
         if (id != user.getId()) {
             return ResponseEntity.badRequest().build();
         }
+        userService.update(user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Updates currently logged in user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing received",
+                    content = @Content)
+    })
+    @PutMapping("update")
+    public ResponseEntity<?> updateByJwt(@RequestBody User user, @AuthenticationPrincipal Jwt jwt) {
+        String uid = jwt.getClaimAsString("sub");
+
+        if (uid != user.getUid()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         userService.update(user);
         return ResponseEntity.noContent().build();
     }
@@ -152,5 +179,27 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Deletes currently logged in user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "The user has been deleted",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The specified user does not exist",
+                    content = @Content)
+    })
+    @DeleteMapping("delete")
+    public ResponseEntity<?> deleteByJwt(@AuthenticationPrincipal Jwt jwt){
+        String uid = jwt.getClaimAsString("sub");
+
+        if (uid == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userService.deleteByUid(uid);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

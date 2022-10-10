@@ -11,3 +11,5 @@ INSERT INTO person (admin, user_description, user_email, hidden, user_name, pass
 VALUES (true, 'test2','smith2@test.com',false, 'John Smith2', 'pro234');
 INSERT INTO person (admin, user_description, user_email, hidden, user_name, password)
 VALUES (false, 'test3','smith3@test.com',true, 'John Smith3', 'pro345');
+INSERT INTO person (admin, uid, user_email, hidden, user_name, password)
+VALUES (false, 'uid', 'test@test.com', true, 'Test Testesen', 'Testord');

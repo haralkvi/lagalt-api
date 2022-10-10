@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteByUid(String uid) {
+        userRepository.deleteByUid(uid);
+    }
+
+    @Override
     public User addByUid(Jwt jwt) {
         User user = new User();
         user.setUid(jwt.getClaimAsString("sub"));

@@ -9,4 +9,6 @@ public interface UserService extends CrudService<User, Integer> {
     User addByUid(Jwt jwt);
 
     User findByUid(String uid);
+
+    void deleteByUid(String uid);
 }
