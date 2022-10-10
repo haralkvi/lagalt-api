@@ -12,10 +12,14 @@ import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api/v1/users")
@@ -26,6 +30,27 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    // requires an actual Jwt in order to work
+    @GetMapping("info")
+    public ResponseEntity getLoggedInUserInfo(@AuthenticationPrincipal Jwt principal) {
+        Map<String, String> map = new HashMap<>();
+        map.put("subject/id", principal.getClaimAsString("sub"));
+        map.put("username", principal.getClaimAsString("preferred_username"));
+        map.put("email", principal.getClaimAsString("email"));
+        map.put("roles", String.valueOf(principal.getClaimAsStringList("roles")));
+        return ResponseEntity.ok(map);
+    }
+
+    // requires an actual Jwt in order to work
+    @GetMapping("current")
+    public ResponseEntity getCurrentlyLoggedInUser(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(
+                userService.findByUid(
+                        jwt.getClaimAsString("sub")
+                )
+        );
+    }
 
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
@@ -83,6 +108,14 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("register")
+    public ResponseEntity addNewUserFromJwt(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.addByUid(jwt);
+        URI uri = URI.create("api/v1/users/" + user.getUid());
+        return ResponseEntity.created(uri).build();
+    }
+
 
     @Operation(summary = "Updates a specified user")
     @ApiResponses(value = {
