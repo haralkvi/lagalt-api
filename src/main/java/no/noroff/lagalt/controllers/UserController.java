@@ -90,6 +90,22 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Get current user's recommended projects")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Recommended projects have successfully been fetched",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Specified user not found",
+                    content = @Content)
+    })
+    public ResponseEntity getRecommendations(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.findByUid(jwt.getClaimAsString("sub"));
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    }
+
+
     @Operation(summary = "Creates a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
