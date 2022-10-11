@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.noroff.lagalt.dtos.SkillSetPostDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
@@ -95,12 +96,25 @@ public class UserController {
     })
     @PutMapping("{id}")
     public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable int id) {
-        User user = userService.update(userMapper.userPostDTOtoUser(inputUser));
-        if(user != null || id != 0){
+        User user = userMapper.userPostDTOtoUser(inputUser);
+        user.setId(id);
+        User userPost = userService.update(user);
+        if(userPost != null){
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("skillset/{id}")
+    public ResponseEntity<?> addToSkillset(@RequestBody SkillSetPostDTO skillsetPostDTO, @PathVariable int id){
+        if(skillsetPostDTO.getId() != id)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addSkillset(skillsetPostDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //public ResponseEntity<?> addToProjectHistory(@RequestBody SkillsetPostDTO skillsetPostDTO){}
+
+    //public ResponseEntity<?> changeDescription(@RequestBody SkillsetPostDTO skillsetPostDTO){}
 
     @Operation(summary = "Deletes a specified user")
     @ApiResponses(value = {
