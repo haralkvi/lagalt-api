@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -30,11 +31,13 @@ public class Project {
     @ManyToMany(mappedBy = "projectsHistory")
     private Set<User> userViews;
 
+    @ElementCollection
     @Column(name="project_category")
-    private String category;
+    private Collection<String> category;
 
+    @ElementCollection
     @Column(name="tags")
-    private String tags;
+    private Collection<String> tags;
 
     @Column(name="summary")
     private String summary;

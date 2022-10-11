@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Project> findRecommendations(User user) {
-        return recommendationUtil.calculateRecommendedProjects(user);
+        return recommendationUtil.getRecommendedProjects(user);
     }
 
     @Override
