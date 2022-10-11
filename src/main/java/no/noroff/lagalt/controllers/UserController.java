@@ -70,7 +70,7 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Gets a specific user by their uid")
+    @Operation(summary = "Fetches the currently logged in user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The user has been received",
