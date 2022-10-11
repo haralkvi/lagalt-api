@@ -94,12 +94,12 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody User user, @PathVariable int id) {
-        if (id != user.getId()) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable int id) {
+        User user = userService.update(userMapper.userPostDTOtoUser(inputUser));
+        if(user != null || id != 0){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        userService.update(user);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "Deletes a specified user")
