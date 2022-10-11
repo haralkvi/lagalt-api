@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.noroff.lagalt.dtos.DescriptionPostDTO;
 import no.noroff.lagalt.dtos.SkillSetPostDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
@@ -112,9 +113,19 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //public ResponseEntity<?> addToProjectHistory(@RequestBody SkillsetPostDTO skillsetPostDTO){}
+    @PostMapping("history/{id}")
+    public ResponseEntity<?> addToClickHistory(@RequestBody UserPostDTO inputUser, @PathVariable int id){
+        if(id==0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addToClickHistory(inputUser,id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-    //public ResponseEntity<?> changeDescription(@RequestBody SkillsetPostDTO skillsetPostDTO){}
+    @PostMapping("description/{id}")
+    public ResponseEntity<?> changeDescription(@RequestBody DescriptionPostDTO descriptionPostDTO, @PathVariable Integer id){
+        if(id==null)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.changeDescription(descriptionPostDTO, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @Operation(summary = "Deletes a specified user")
     @ApiResponses(value = {
