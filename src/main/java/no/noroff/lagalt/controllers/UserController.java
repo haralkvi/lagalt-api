@@ -31,7 +31,6 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
