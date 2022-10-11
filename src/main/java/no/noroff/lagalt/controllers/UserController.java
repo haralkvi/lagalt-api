@@ -80,11 +80,14 @@ public class UserController {
     })
     @GetMapping("current")
     public ResponseEntity getByJwt(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(
-                userService.findByUid(
-                        jwt.getClaimAsString("sub")
-                )
-        );
+        User userModel = userService.findByUid(jwt.getClaimAsString("sub"));
+
+        if (userModel != null) {
+            UserGetDTO userGetDTO = userMapper.userToUserDTO(userModel);
+            return new ResponseEntity<>(userGetDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "Creates a user")
