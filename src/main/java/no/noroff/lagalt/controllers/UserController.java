@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
+import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;
@@ -30,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
@@ -101,7 +106,16 @@ public class UserController {
     })
     public ResponseEntity getRecommendations(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.findByUid(jwt.getClaimAsString("sub"));
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (user != null) {
+            Collection<ProjectGetDTO> recommendedProjects =
+                    projectMapper.projectToProjectDTO(
+                            userService.findRecommendations(user)
+                    );
+            return new ResponseEntity<>(recommendedProjects, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
     }
 
