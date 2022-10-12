@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RecommendationUtil recommendationUtil;
+
+    @Autowired
+    ProjectService projectService;
 
     @Override
     public User findById(Integer integer) {
@@ -73,5 +79,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUid(String uid) {
         return userRepository.findByUid(uid);
+       }
+       
+    public void addSkillset(String[] skillsetPostDTO, Integer id){
+        User user = this.findById(id);
+        user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
+        userRepository.save(user);
     }
+    
+    public void addToClickHistory(Integer[] projectId, Integer id){
+        User user = this.findById(id);
+        Set<Project> projects = user.getProjectsHistory();
+        for(Integer s : projectId){
+            Project project = projectService.findById(s);
+            projects.add(project);
+        }
+        user.setProjectsHistory(projects);
+        userRepository.save(user);
+    }
+
+    public void changeDescription(String[] description, Integer id){
+        User user = userRepository.findById(id).get();
+        user.setDescription(description[0]);
+        userRepository.save(user);
+      }
 }

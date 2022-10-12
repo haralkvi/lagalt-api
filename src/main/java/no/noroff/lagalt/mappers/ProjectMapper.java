@@ -52,7 +52,6 @@ public abstract class ProjectMapper {
                 .map(User::getId).collect(Collectors.toSet());
     }
 
-
     @Named("idToOwner")
     User mapToUser(int id){
         return userService.findById(id);

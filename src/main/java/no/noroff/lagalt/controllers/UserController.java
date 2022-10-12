@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/users")
 public class UserController {
@@ -165,12 +166,35 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody User user, @PathVariable int id) {
-        if (id != user.getId()) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable int id) {
+        User user = userMapper.userPostDTOtoUser(inputUser);
+        user.setId(id);
+        User userPost = userService.update(user);
+        if(userPost != null){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        userService.update(user);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("skillset/{id}")
+    public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable int id){
+        if(skillsetPostDTO.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addSkillset(skillsetPostDTO,id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("history/{id}")
+    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable int id){
+        if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addToClickHistory(projectId,id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("description/{id}")
+    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable Integer id){
+        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.changeDescription(description, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Updates currently logged in user")
