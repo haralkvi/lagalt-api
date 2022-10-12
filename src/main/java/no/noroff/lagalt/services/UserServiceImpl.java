@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     ProjectService projectService;
 
     @Autowired
-    private ApplicationServiceImpl applicationService;
+    private ApplicationService applicationService;
 
     @Override
     public User findById(Integer integer) {
