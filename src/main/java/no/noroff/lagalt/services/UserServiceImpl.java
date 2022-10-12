@@ -3,7 +3,9 @@ package no.noroff.lagalt.services;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.UserRepository;
+import no.noroff.lagalt.util.RecommendationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private RecommendationUtil recommendationUtil;
 
     @Autowired
     ProjectService projectService;
@@ -50,11 +55,38 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(entity);
     }
 
+    @Override
+    public void deleteByUid(String uid) {
+        userRepository.deleteByUid(uid);
+    }
+
+    @Override
+    public Collection<Project> findRecommendations(User user) {
+        return recommendationUtil.getRecommendedProjects(user);
+    }
+
+    @Override
+    public User addByUid(Jwt jwt) {
+        User user = new User();
+        user.setUid(jwt.getClaimAsString("sub"));
+        user.setName(jwt.getClaimAsString("username"));
+        user.setEmail(jwt.getClaimAsString("email"));
+        user.setAdmin(jwt.getClaimAsBoolean("admin"));
+        user.setHidden(jwt.getClaimAsBoolean("hidden"));
+        return user;
+    }
+
+    @Override
+    public User findByUid(String uid) {
+        return userRepository.findByUid(uid);
+       }
+       
     public void addSkillset(String[] skillsetPostDTO, Integer id){
         User user = this.findById(id);
         user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
         userRepository.save(user);
     }
+    
     public void addToClickHistory(Integer[] projectId, Integer id){
         User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
@@ -70,5 +102,5 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).get();
         user.setDescription(description[0]);
         userRepository.save(user);
-    }
+      }
 }

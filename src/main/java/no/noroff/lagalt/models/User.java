@@ -17,6 +17,8 @@ public class User {
     @Column(name = "user_id")
     private int id;
 
+    private String uid;
+
     @Column(name = "user_name", nullable = false)
     private String name;
 
@@ -58,4 +60,12 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
 }
