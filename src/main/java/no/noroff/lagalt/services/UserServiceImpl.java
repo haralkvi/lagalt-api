@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,8 +47,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Integer integer) {
-        userRepository.deleteById(integer);
+    @Transactional
+    public void deleteById(Integer id) {
+        if (userRepository.existsById(id)) {
+            User user = userRepository.findById(id).get();
+
+            user.getProjectsOwned().forEach(project -> project.setOwner(null));
+            user.getProjectsHistory().forEach(project -> project.removeUserFromHistory(user));
+            user.getProjectsParticipated().forEach(project -> project.removeUserFromMembers(user));
+            user.getApplications().forEach(application -> application.setUser(null));
+            user.getComments().forEach(comment -> comment.setUser(null));
+
+            userRepository.deleteById(id);
+        }
     }
 
     @Override

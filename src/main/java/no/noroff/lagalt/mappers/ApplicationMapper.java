@@ -47,6 +47,10 @@ public abstract class ApplicationMapper {
 
     @Named("userToId")
     Integer mapToInt(User value){
+        if (value == null) {
+            return null;
+        }
+
         return value.getId();
     }
 

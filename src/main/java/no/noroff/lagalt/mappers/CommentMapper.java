@@ -50,6 +50,10 @@ public abstract class CommentMapper {
 
     @Named("userToId")
     Integer mapToInt(User value){
+        if (value == null) {
+            return null;
+        }
+
         return value.getId();
     }
 

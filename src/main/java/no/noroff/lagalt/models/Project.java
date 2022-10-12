@@ -53,4 +53,11 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Application> applications;
 
+    public boolean removeUserFromHistory(User user) {
+        return userViews.remove(user);
+    }
+
+    public boolean removeUserFromMembers(User user) {
+        return members.remove(user);
+    }
 }

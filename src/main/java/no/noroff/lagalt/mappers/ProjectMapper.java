@@ -41,12 +41,16 @@ public abstract class ProjectMapper {
 
     @Named("ownerToString")
     String mapToString(User value){
-        return value.getName();
+        if (value == null) {
+            return null;
+        } else {
+            return value.getName();
+        }
     }
 
     @Named("usersToIds")
     Set<Integer> mapToInteger(Set<User> users) {
-        if(users == null)
+        if (users == null)
             return null;
         return users.stream()
                 .map(User::getId).collect(Collectors.toSet());
