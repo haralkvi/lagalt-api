@@ -22,7 +22,7 @@ public abstract class ProjectMapper {
     UserService userService;
 
     @Mapping(target = "members", source = "members", qualifiedByName = "usersToIds")
-    @Mapping(target = "owner", source = "owner", qualifiedByName = "ownerToString")
+    @Mapping(target = "owner", source = "owner.id")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
     @Mapping(target = "owner", source = "owner", qualifiedByName =  "idToOwner")
@@ -37,15 +37,6 @@ public abstract class ProjectMapper {
             list.add(projectToProjectDTO(project));
         }
         return list;
-    }
-
-    @Named("ownerToString")
-    String mapToString(User value){
-        if (value == null) {
-            return null;
-        } else {
-            return value.getName();
-        }
     }
 
     @Named("usersToIds")
