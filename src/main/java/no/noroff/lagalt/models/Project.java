@@ -31,9 +31,8 @@ public class Project {
     @ManyToMany(mappedBy = "projectsHistory")
     private Set<User> userViews;
 
-    @ElementCollection
     @Column(name="project_category")
-    private Collection<String> category;
+    private String category;
 
     @ElementCollection
     @Column(name="tags")
