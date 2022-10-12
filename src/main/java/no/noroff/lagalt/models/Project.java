@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -17,20 +18,26 @@ public class Project {
     @Column(name="project_id")
     private int id;
 
-    @Column(name="project_name")
+    @Column(name="project_name", nullable = false)
     private String name;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "projectsOwned")
     private User owner;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "projectsParticipated")
     private Set<User> members;
 
-    @Column(name="project_category")
-    private String category;
+    @ManyToMany(mappedBy = "projectsHistory")
+    private Set<User> userViews;
 
+    @ElementCollection
+    @Column(name="project_category")
+    private Collection<String> category;
+
+    @ElementCollection
     @Column(name="tags")
-    private String tags;
+    private Collection<String> tags;
 
     @Column(name="summary")
     private String summary;
@@ -43,4 +50,8 @@ public class Project {
 
     @Column(name="project_link")
     private String link;
+
+    @OneToMany(mappedBy = "project")
+    private Set<Application> applications;
+
 }

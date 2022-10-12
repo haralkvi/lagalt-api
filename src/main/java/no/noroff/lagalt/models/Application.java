@@ -18,19 +18,19 @@ public class Application {
     @Column(name="application_id")
     private int application_id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @Column(name="application_status")
     private String status;
 
+    @Column(nullable = false)
     @Timestamp
     public String time;
-
-
-
 
 }
