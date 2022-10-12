@@ -1,8 +1,5 @@
 package no.noroff.lagalt.services;
 
-import no.noroff.lagalt.dtos.DescriptionPostDTO;
-import no.noroff.lagalt.dtos.SkillSetPostDTO;
-import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.UserRepository;
@@ -53,25 +50,25 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(entity);
     }
 
-    public void addSkillset(SkillSetPostDTO skillsetPostDTO){
-        User user = userRepository.findById(skillsetPostDTO.getId()).get();
-        String skills = skillsetPostDTO.getSkill();
-        String[] skillsSplit = skills.split(",");
-        user.setSkillSet(new HashSet<>(Arrays.asList(skillsSplit)));
+    public void addSkillset(String[] skillsetPostDTO, Integer id){
+        User user = this.findById(id);
+        user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
         userRepository.save(user);
     }
-    public void addToClickHistory(UserPostDTO userInput, Integer id){
-        User user = userRepository.findByName(userInput.getName());
-        Project project = projectService.findById(id);
+    public void addToClickHistory(Integer[] projectId, Integer id){
+        User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
-        projects.add(project);
+        for(Integer s : projectId){
+            Project project = projectService.findById(s);
+            projects.add(project);
+        }
         user.setProjectsHistory(projects);
         userRepository.save(user);
     }
 
-    public void changeDescription(DescriptionPostDTO userInput, Integer id){
+    public void changeDescription(String[] description, Integer id){
         User user = userRepository.findById(id).get();
-        user.setDescription(userInput.getDescription());
+        user.setDescription(description[0]);
         userRepository.save(user);
     }
 }

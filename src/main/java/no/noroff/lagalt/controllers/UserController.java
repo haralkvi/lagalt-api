@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.noroff.lagalt.dtos.DescriptionPostDTO;
-import no.noroff.lagalt.dtos.SkillSetPostDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
@@ -106,24 +104,24 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("skillset/{id}")
-    public ResponseEntity<?> addToSkillset(@RequestBody SkillSetPostDTO skillsetPostDTO, @PathVariable int id){
-        if(skillsetPostDTO.getId() != id)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.addSkillset(skillsetPostDTO);
+    @PutMapping("skillset/{id}")
+    public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable int id){
+        if(skillsetPostDTO.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addSkillset(skillsetPostDTO,id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("history/{id}")
-    public ResponseEntity<?> addToClickHistory(@RequestBody UserPostDTO inputUser, @PathVariable int id){
-        if(id==0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.addToClickHistory(inputUser,id);
+    @PutMapping("history/{id}")
+    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable int id){
+        if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.addToClickHistory(projectId,id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("description/{id}")
-    public ResponseEntity<?> changeDescription(@RequestBody DescriptionPostDTO descriptionPostDTO, @PathVariable Integer id){
-        if(id==null)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.changeDescription(descriptionPostDTO, id);
+    @PutMapping("description/{id}")
+    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable Integer id){
+        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
