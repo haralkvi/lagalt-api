@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ProjectService projectService;
 
+    @Autowired
+    private ApplicationServiceImpl applicationService;
+
     @Override
     public User findById(Integer integer) {
         return userRepository.findById(integer).get();
@@ -50,13 +53,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteById(Integer id) {
         if (userRepository.existsById(id)) {
-            User user = userRepository.findById(id).get();
+            User user = this.findById(id);
 
+            // a user's projects and comments are kept even if the user is deleted
             user.getProjectsOwned().forEach(project -> project.setOwner(null));
             user.getProjectsHistory().forEach(project -> project.removeUserFromHistory(user));
             user.getProjectsParticipated().forEach(project -> project.removeUserFromMembers(user));
-            user.getApplications().forEach(application -> application.setUser(null));
             user.getComments().forEach(comment -> comment.setUser(null));
+
+            // a user's applications are deleted if the user is deleted
+            user.getApplications().forEach(application -> applicationService.delete(application));
 
             userRepository.deleteById(id);
         }
