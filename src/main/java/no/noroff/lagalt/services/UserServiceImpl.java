@@ -97,10 +97,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUid(uid);
        }
 
-    /**
+    /** Add skills to an specified users skillset
      *
-      * @param skillsetPostDTO
-     * @param id
+      * @param skillsetPostDTO An array of Strings, these contain skills
+     * @param id Integer that refers to an specific user
      */
     public void addSkillset(String[] skillsetPostDTO, Integer id){
         User user = this.findById(id);
@@ -108,10 +108,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /**
+    /** Adds a project or multiple projects to a specified users click history
      *
-     * @param projectId
-     * @param id
+     * @param projectId An array of integers that refers to projects' ids
+     * @param id Integer that refers to an users id
+     * @author Marius Olafsen
      */
     public void addToClickHistory(Integer[] projectId, Integer id){
         User user = this.findById(id);
@@ -126,8 +127,9 @@ public class UserServiceImpl implements UserService {
 
     /** Changes the description of the current user
      *
-     * @param description
-     * @param id
+     * @param description An array of strings where only 0 is used
+     * @param id Refers to the id of an user
+     * @author Marius Olafsen
      */
     public void changeDescription(String[] description, Integer id){
         User user = this.findById(id);
@@ -139,7 +141,7 @@ public class UserServiceImpl implements UserService {
      * is already hidden, and from "not hidden" to hidden if
      * otherwise.
      *
-     * @param uid (refers to currently logged in user)
+     * @param uid refers to currently logged in user
      * @author Marius Olafsen
      */
     public void changeHiddenStatus(String uid){
@@ -151,8 +153,8 @@ public class UserServiceImpl implements UserService {
     /** Adds the current logged in user as an
      * member to a specified project
      *
-     * @param uId (currently logged in user, comes from JWT)
-     * @param id (refers to an project)
+     * @param uId currently logged in user, comes from JWT
+     * @param id refers to an project
      * @author Marius Olafsen
      */
     public void addMember(String uId, int id){
@@ -166,8 +168,8 @@ public class UserServiceImpl implements UserService {
 
     /** Adds member(s) to an specified project
      *
-     * @param members (int that refers to users)
-     * @param id (refers to an project)
+     * @param members int that refers to users
+     * @param id refers to an project
      * @author Marius Olafsen
      */
     public void addMembers(Integer[] members, int id){
