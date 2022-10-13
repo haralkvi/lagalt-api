@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -85,7 +83,7 @@ public class UserController {
                     content = @Content)
     })
     @GetMapping("current")
-    public ResponseEntity getByJwt(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> getByJwt(@AuthenticationPrincipal Jwt jwt) {
         User userModel = userService.findByUid(jwt.getClaimAsString("sub"));
 
         if (userModel != null) {
@@ -105,7 +103,7 @@ public class UserController {
                     description = "Specified user not found",
                     content = @Content)
     })
-    public ResponseEntity getRecommendations(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> getRecommendations(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.findByUid(jwt.getClaimAsString("sub"));
 
         if (user != null) {
@@ -150,7 +148,7 @@ public class UserController {
                     content = @Content)
     })
     @PostMapping("register")
-    public ResponseEntity addByJwt(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.addByUid(jwt);
         URI uri = URI.create("api/v1/users/" + user.getUid());
         return ResponseEntity.created(uri).build();
@@ -176,6 +174,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Adds skills to a certain users skillset")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The skills has been added to the users skillset",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing changed",
+                    content = @Content)
+    })
     @PutMapping("skillset/{id}")
     public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable int id){
         if(skillsetPostDTO.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -183,6 +190,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "Adds a certain project (id) into a users click history")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The project has been added to the users click history",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing has been added",
+                    content = @Content)
+    })
     @PutMapping("history/{id}")
     public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable int id){
         if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -190,6 +206,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "Changes description of user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user description has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing changed",
+                    content = @Content)
+    })
     @PutMapping("description/{id}")
     public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable Integer id){
         if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
