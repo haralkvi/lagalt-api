@@ -235,7 +235,7 @@ public class UserController {
     public ResponseEntity<?> updateByJwt(@RequestBody User user, @AuthenticationPrincipal Jwt jwt) {
         String uid = jwt.getClaimAsString("sub");
 
-        if (uid != user.getUid()) {
+        if (uid.equals(user.getUid())) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -282,5 +282,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("hidden")
+    public ResponseEntity<?> toggleHiddenStatus(@AuthenticationPrincipal Jwt jwt){
+        String uid = jwt.getClaimAsString("sub");
 
+        if (uid == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userService.changeHiddenStatus(uid);
+        return ResponseEntity.noContent().build();
+    }
 }

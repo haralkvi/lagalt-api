@@ -22,4 +22,6 @@ public interface UserService extends CrudService<User, Integer> {
 
     void changeDescription(String[] userPostDto, Integer integer);
 
+    void changeHiddenStatus(String uid);
+
 }

@@ -115,8 +115,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public void changeDescription(String[] description, Integer id){
-        User user = userRepository.findById(id).get();
+        User user = this.findById(id);
         user.setDescription(description[0]);
         userRepository.save(user);
       }
+
+    public void changeHiddenStatus(String uid){
+        User user = this.findByUid(uid);
+        user.setHidden(!user.isHidden());
+        userRepository.save(user);
+    }
 }
