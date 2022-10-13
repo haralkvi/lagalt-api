@@ -26,8 +26,9 @@ public class Application {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="application_status")
-    private String status;
+    private ApplicationStatus status;
 
     @Column(nullable = false)
     @Timestamp
