@@ -295,7 +295,7 @@ public class UserController {
     }
 
     @PutMapping("{id}/member")
-    public ResponseEntity<?> addMembers(@AuthenticationPrincipal Jwt jwt, @PathVariable int id){
+    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int id){
         String uid = jwt.getClaimAsString("sub");
         if (uid == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -303,4 +303,15 @@ public class UserController {
         userService.addMember(uid, id);
         return ResponseEntity.noContent().build();
     }
+
+    //kan denne flyttes over i project igjen lol
+    @PutMapping("{id}/members")
+    public ResponseEntity<?> addMember(@RequestBody Integer[] members, @PathVariable int id){
+        if (members.length==0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.addMembers(members, id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

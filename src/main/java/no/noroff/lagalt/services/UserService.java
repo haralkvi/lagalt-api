@@ -26,4 +26,6 @@ public interface UserService extends CrudService<User, Integer> {
 
     void addMember(String uId, int id);
 
+    void addMembers(Integer[] members, int id);
+
 }

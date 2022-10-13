@@ -134,4 +134,15 @@ public class UserServiceImpl implements UserService {
         project.setMembers(users);
         projectService.update(project);
     }
+
+    public void addMembers(Integer[] members, int id){
+        Project project = projectService.findById(id);
+        Set<User> users = project.getMembers();
+        for(Integer i : members){
+            User user = this.findById(i);
+            users.add(user);
+        }
+        project.setMembers(users);
+        projectService.update(project);
+    }
 }
