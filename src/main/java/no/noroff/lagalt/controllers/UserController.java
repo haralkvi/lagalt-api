@@ -233,14 +233,15 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("update")
-    public ResponseEntity<?> updateByJwt(@RequestBody User user, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> updateByJwt(@RequestBody UserPostDTO userPostDTO, @AuthenticationPrincipal Jwt jwt) {
         String uid = jwt.getClaimAsString("sub");
+        User user = userService.findByUid(uid);
 
-        if (uid.equals(user.getUid())) {
+        if (user == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        userService.update(user);
+        userService.update(userMapper.userPostDTOtoUser(userPostDTO));
         return ResponseEntity.noContent().build();
     }
 
