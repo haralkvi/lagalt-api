@@ -1,9 +1,9 @@
-INSERT INTO person (admin, user_description, user_email, hidden, user_name)
-VALUES (true, 'test1','ola@norman.com', false, 'Ola Nordmann');
-INSERT INTO person (admin, user_description, user_email, hidden, user_name)
-VALUES (false, 'test2','kari@norman.com', true, 'Kari Nordmann');
-INSERT INTO person (admin, user_description, user_email, hidden, user_name)
-VALUES (false, 'test3','smith@test.com', false, 'John Smith');
+INSERT INTO person (user_description, user_email, hidden, user_name)
+VALUES ('test1','ola@norman.com', false, 'Ola Nordmann');
+INSERT INTO person (user_description, user_email, hidden, user_name)
+VALUES ('test2','kari@norman.com', true, 'Kari Nordmann');
+INSERT INTO person (user_description, user_email, hidden, user_name)
+VALUES ('test3','smith@test.com', false, 'John Smith');
 INSERT INTO project (project_category, project_image, project_link, project_name, summary, projects_owned)
 VALUES ('Film', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Baby_Mother_Grandmother_and_Great_Grandmother.jpg/800px-Baby_Mother_Grandmother_and_Great_Grandmother.jpg',
         'placeholder', 'Filmen om filmen om generasjoner', 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.', 1);
