@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -15,7 +16,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application findById(Integer integer) {
-        return applicationRepository.findById(integer).get();
+        Optional<Application> opt = applicationRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override

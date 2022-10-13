@@ -2,7 +2,7 @@ package no.noroff.lagalt.util;
 
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import java.util.*;
 public class RecommendationUtil {
 
     @Autowired
-    ProjectService projectService;
+    ProjectRepository projectRepository;
 
     private static int NUMBER_OF_RECOMMENDATIONS = 10;
 
@@ -30,7 +30,7 @@ public class RecommendationUtil {
      * @return a collection of recommended projects
      */
     public Collection<Project> getRecommendedProjects(User user) {
-        Collection<Project> allProjects = projectService.findAll();
+        Collection<Project> allProjects = projectRepository.findAll();
         Collection<String> userSkills = user.getSkillSet();
 
         Collection<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);

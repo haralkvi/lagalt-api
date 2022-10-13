@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/projects")

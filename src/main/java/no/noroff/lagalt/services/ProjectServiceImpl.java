@@ -1,15 +1,13 @@
 package no.noroff.lagalt.services;
 
-import no.noroff.lagalt.models.Application;
-import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
-import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -23,11 +21,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private CommentService commentService;
 
-    //javadocs
-
     @Override
     public Project findById(Integer integer) {
-        return projectRepository.findById(integer).get();
+        Optional<Project> opt = projectRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override
@@ -69,4 +66,5 @@ public class ProjectServiceImpl implements ProjectService {
     public void delete(Project entity) {
         projectRepository.delete(entity);
     }
+
 }

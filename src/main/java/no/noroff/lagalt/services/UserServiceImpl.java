@@ -9,10 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Integer integer) {
-        return userRepository.findById(integer).get();
+        Optional<User> opt = userRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override
@@ -117,8 +115,34 @@ public class UserServiceImpl implements UserService {
     }
 
     public void changeDescription(String[] description, Integer id){
-        User user = userRepository.findById(id).get();
+        User user = this.findById(id);
         user.setDescription(description[0]);
         userRepository.save(user);
       }
+
+    public void changeHiddenStatus(String uid){
+        User user = this.findByUid(uid);
+        user.setHidden(!user.isHidden());
+        userRepository.save(user);
+    }
+
+    public void addMember(String uId, int id){
+        Project project = projectService.findById(id);
+        User user = this.findByUid(uId);
+        Set<User> users = project.getMembers();
+        users.add(user);
+        project.setMembers(users);
+        projectService.update(project);
+    }
+
+    public void addMembers(Integer[] members, int id){
+        Project project = projectService.findById(id);
+        Set<User> users = project.getMembers();
+        for(Integer i : members){
+            User user = this.findById(i);
+            users.add(user);
+        }
+        project.setMembers(users);
+        projectService.update(project);
+    }
 }
