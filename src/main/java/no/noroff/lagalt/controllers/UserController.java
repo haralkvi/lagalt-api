@@ -149,8 +149,6 @@ public class UserController {
     })
     @PostMapping("register")
     public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
-        System.out.println("JWT: ");
-        System.out.println(jwt);
         User user = userService.addByUid(jwt);
         URI uri = URI.create("api/v1/users/" + user.getUid());
         return ResponseEntity.created(uri).build();

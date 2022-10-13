@@ -85,11 +85,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addByUid(Jwt jwt) {
-        System.out.println("ENTERED ADD BY UID");
         User user = new User();
         user.setUid(jwt.getClaimAsString("sub"));
-        user.setName("test");
-        user.setEmail("test");
+        user.setName(jwt.getClaimAsString("name"));
+        user.setEmail(jwt.getClaimAsString("email"));
         user.setHidden(false);
         userRepository.save(user);
         return user;
