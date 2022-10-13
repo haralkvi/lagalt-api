@@ -87,10 +87,10 @@ public class UserServiceImpl implements UserService {
     public User addByUid(Jwt jwt) {
         User user = new User();
         user.setUid(jwt.getClaimAsString("sub"));
-        user.setName(jwt.getClaimAsString("username"));
+        user.setName(jwt.getClaimAsString("name"));
         user.setEmail(jwt.getClaimAsString("email"));
-        user.setAdmin(jwt.getClaimAsBoolean("admin"));
-        user.setHidden(jwt.getClaimAsBoolean("hidden"));
+        user.setHidden(false);
+        userRepository.save(user);
         return user;
     }
 

@@ -50,9 +50,6 @@ public class User {
     )
     private Set<Project> projectsHistory;
 
-    @Column(nullable = false)
-    private boolean admin;
-
     private boolean hidden;
 
     @OneToMany(mappedBy = "user")
@@ -60,12 +57,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getUid() {
-        return uid;
-    }
 }
