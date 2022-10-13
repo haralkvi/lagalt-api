@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/projects")
@@ -119,5 +120,16 @@ public class ProjectController {
         projectService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("{id}/member")
+    public ResponseEntity<?> addMembers(@RequestBody Integer[]  userId, @PathVariable int id){
+        if(userId.length<1)return ResponseEntity.badRequest().build();
+        projectService.addMembers(userId, id);
+        return ResponseEntity.noContent().build();
+
+    }
+
+
+
 
 }

@@ -9,10 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Integer integer) {
-        return userRepository.findById(integer).get();
+        Optional<User> opt = userRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override
