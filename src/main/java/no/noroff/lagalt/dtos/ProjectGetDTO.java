@@ -10,15 +10,15 @@ public class ProjectGetDTO {
 
     private int id;
     private String name;
-    private String owner;
+    private int owner;
     private Set<Integer> members;
-    //private Set<Integer> userViews;
+    private Set<Integer> userViews;
     private String category;
     private Collection<String> tags;
     private String summary;
-    //private Set<Integer> comments;
+    private Set<Integer> comments;
     private String image;
     private String link;
-    //private Set<Integer> applications;
+    private Set<Integer> applications;
 
 }

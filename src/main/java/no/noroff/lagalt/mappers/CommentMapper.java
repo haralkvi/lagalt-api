@@ -27,8 +27,8 @@ public abstract class CommentMapper {
     @Autowired
     UserService userService;
 
-    @Mapping(target = "user", source = "user", qualifiedByName = "userToId" )
-    @Mapping(target = "project", source = "project", qualifiedByName = "projectToId")
+    @Mapping(target = "user", source = "user.id")
+    @Mapping(target = "project", source = "project.id")
     public abstract CommentGetDTO commentToCommentDTO(Comment comment);
 
     @Mapping(target = "user", source = "user", qualifiedByName = "idToUser" )
@@ -44,18 +44,6 @@ public abstract class CommentMapper {
             list.add(commentToCommentDTO(comment));
         }
         return list;
-    }
-
-
-
-    @Named("userToId")
-    Integer mapToInt(User value){
-        return value.getId();
-    }
-
-    @Named("projectToId")
-    Integer mapToInt(Project value){
-        return value.getId();
     }
 
     @Named("idToProject")

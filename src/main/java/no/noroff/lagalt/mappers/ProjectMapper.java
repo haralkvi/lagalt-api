@@ -2,6 +2,8 @@ package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
+import no.noroff.lagalt.models.Application;
+import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;
@@ -21,8 +23,11 @@ public abstract class ProjectMapper {
     @Autowired
     UserService userService;
 
+    @Mapping(target = "owner", source = "owner.id")
     @Mapping(target = "members", source = "members", qualifiedByName = "usersToIds")
-    @Mapping(target = "owner", source = "owner", qualifiedByName = "ownerToString")
+    @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToIds")
+    @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToIds")
+    @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
     @Mapping(target = "owner", source = "owner", qualifiedByName =  "idToOwner")
@@ -39,17 +44,28 @@ public abstract class ProjectMapper {
         return list;
     }
 
-    @Named("ownerToString")
-    String mapToString(User value){
-        return value.getName();
-    }
-
     @Named("usersToIds")
     Set<Integer> mapToInteger(Set<User> users) {
-        if(users == null)
+        if (users == null)
             return null;
         return users.stream()
                 .map(User::getId).collect(Collectors.toSet());
+    }
+
+    @Named("commentsToIds")
+    Set<Integer> mapCommentsToIds(Set<Comment> comments) {
+        if (comments == null)
+            return null;
+        return comments.stream()
+                .map(Comment::getId).collect(Collectors.toSet());
+    }
+
+    @Named("applicationsToIds")
+    Set<Integer> mapApplicationsToIds(Set<Application> application) {
+        if (application == null)
+            return null;
+        return application.stream()
+                .map(Application::getApplication_id).collect(Collectors.toSet());
     }
 
     @Named("idToOwner")

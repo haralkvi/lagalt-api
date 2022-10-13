@@ -25,8 +25,8 @@ public abstract class ApplicationMapper {
     @Autowired
     ProjectService projectService;
 
-    @Mapping(target = "user", source = "user", qualifiedByName = "userToId" )
-    @Mapping(target = "project", source = "project", qualifiedByName = "projectToId")
+    @Mapping(target = "user", source = "user.id")
+    @Mapping(target = "project", source = "project.id")
     public abstract ApplicationGetDTO applicationToApplicationDTO(Application application);
 
     @Mapping(target = "user", source = "user", qualifiedByName = "idToUser" )
@@ -44,20 +44,9 @@ public abstract class ApplicationMapper {
         return list;
     }
 
-
-    @Named("userToId")
-    Integer mapToInt(User value){
-        return value.getId();
-    }
-
     @Named("idToUser")
     User mapToUser(int id){
         return userService.findById(id);
-    }
-
-    @Named("projectToId")
-    Integer mapToInt(Project value){
-        return value.getId();
     }
 
     @Named("idToProject")
