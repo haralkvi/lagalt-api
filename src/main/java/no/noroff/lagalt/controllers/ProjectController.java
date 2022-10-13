@@ -38,7 +38,6 @@ public class ProjectController {
     })
     @GetMapping
     public ResponseEntity<?> getAll() {
-        System.out.println("DEBUG: ");
         Collection<ProjectGetDTO> projects = projectMapper.projectToProjectDTO(projectService.findAll());
         if (projects.size()>0){
             return new ResponseEntity<>(projects, HttpStatus.OK);
