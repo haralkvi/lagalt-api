@@ -96,13 +96,23 @@ public class UserServiceImpl implements UserService {
     public User findByUid(String uid) {
         return userRepository.findByUid(uid);
        }
-       
+
+    /**
+     *
+      * @param skillsetPostDTO
+     * @param id
+     */
     public void addSkillset(String[] skillsetPostDTO, Integer id){
         User user = this.findById(id);
         user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
         userRepository.save(user);
     }
-    
+
+    /**
+     *
+     * @param projectId
+     * @param id
+     */
     public void addToClickHistory(Integer[] projectId, Integer id){
         User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
@@ -114,18 +124,37 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /** Changes the description of the current user
+     *
+     * @param description
+     * @param id
+     */
     public void changeDescription(String[] description, Integer id){
         User user = this.findById(id);
         user.setDescription(description[0]);
         userRepository.save(user);
       }
 
+    /** Changes from hidden to "not hidden" if the user
+     * is already hidden, and from "not hidden" to hidden if
+     * otherwise.
+     *
+     * @param uid (refers to currently logged in user)
+     * @author Marius Olafsen
+     */
     public void changeHiddenStatus(String uid){
         User user = this.findByUid(uid);
         user.setHidden(!user.isHidden());
         userRepository.save(user);
     }
 
+    /** Adds the current logged in user as an
+     * member to a specified project
+     *
+     * @param uId (currently logged in user, comes from JWT)
+     * @param id (refers to an project)
+     * @author Marius Olafsen
+     */
     public void addMember(String uId, int id){
         Project project = projectService.findById(id);
         User user = this.findByUid(uId);
@@ -135,6 +164,12 @@ public class UserServiceImpl implements UserService {
         projectService.update(project);
     }
 
+    /** Adds member(s) to an specified project
+     *
+     * @param members (int that refers to users)
+     * @param id (refers to an project)
+     * @author Marius Olafsen
+     */
     public void addMembers(Integer[] members, int id){
         Project project = projectService.findById(id);
         Set<User> users = project.getMembers();
