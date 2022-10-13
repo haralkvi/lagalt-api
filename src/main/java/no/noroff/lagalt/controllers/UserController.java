@@ -255,7 +255,7 @@ public class UserController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
+        if (userService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         userService.deleteById(id);
