@@ -103,6 +103,7 @@ public class UserController {
                     description = "Specified user not found",
                     content = @Content)
     })
+    @GetMapping("recommendations")
     public ResponseEntity<?> getRecommendations(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.findByUid(jwt.getClaimAsString("sub"));
 
