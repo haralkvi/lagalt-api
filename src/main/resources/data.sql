@@ -12,8 +12,8 @@ VALUES ('Web', 'https://image.klikk.no/3026636.jpg?imageId=3026636&x=0&y=0&cropw
         'placeholder', 'Remake av Norges første nettside', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 2);
 INSERT INTO project (project_category, project_image, project_link, project_name, summary, projects_owned)
 VALUES ('Musikk', 'https://premium.vgc.no/v2/images/fab20785-874d-4b48-a3c8-cdef1e8aa006?fit=crop&format=auto&h=1425&w=1900&s=642c3d1003e6a2066cc414a534b32df6d83ca699',
-        'placeholder', 'Syngende Postbud - Et prosjekt av Posten', 'Arbeid', 'Post'],
-        'Vi i Posten har i år startet prosjektet der vi tester ut syngende Postbud rundt omkring i landet. Som en del av prosjektet komponerer vi sangene som postbudene bruker selv. I tillegg har vi noen postbud som er i en periode med kursing i beatboxing, men dette er bare i oppstartsfasen.', 2);
+        'placeholder', 'Syngende Postbud - Et prosjekt av Posten',
+        'Vi i Posten har i år startet prosjektet der vi tester ut syngende Postbud rundt omkring i landet. Som en del av prosjektet komponerer vi sangene som postbudene bruker selv.', 2);
 INSERT INTO project (project_category, project_image, project_link, project_name, summary, projects_owned)
 VALUES ('Spill', 'https://www.nfi.no/tildelinger-2016-til-2020/produksjon/dokumentar/mannen-fra-snasa/_/image/22dc0ab8-d013-4683-81a5-68e8ec5fe80b:524e6a3e472821a5ce76decae82dc19eda128443/width-1920/Mannen-fra-snåsa-1920x1080.jpg.jpeg',
         'placeholder', 'Spillet om Snåsamannen','Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 3);
@@ -33,5 +33,4 @@ INSERT INTO application (application_status, time, project_id, user_id)
 VALUES ('Venter', '05.September 2017',4,2);
 INSERT INTO application (application_status, time, project_id, user_id)
 VALUES ('Venter', '07.September 2019',4,3);
-
 
