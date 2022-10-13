@@ -293,4 +293,14 @@ public class UserController {
         userService.changeHiddenStatus(uid);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("{id}/member")
+    public ResponseEntity<?> addMembers(@AuthenticationPrincipal Jwt jwt, @PathVariable int id){
+        String uid = jwt.getClaimAsString("sub");
+        if (uid == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.addMember(uid, id);
+        return ResponseEntity.noContent().build();
+    }
 }

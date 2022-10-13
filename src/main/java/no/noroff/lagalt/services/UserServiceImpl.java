@@ -125,4 +125,13 @@ public class UserServiceImpl implements UserService {
         user.setHidden(!user.isHidden());
         userRepository.save(user);
     }
+
+    public void addMember(String uId, int id){
+        Project project = projectService.findById(id);
+        User user = this.findByUid(uId);
+        Set<User> users = project.getMembers();
+        users.add(user);
+        project.setMembers(users);
+        projectService.update(project);
+    }
 }

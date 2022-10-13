@@ -24,4 +24,6 @@ public interface UserService extends CrudService<User, Integer> {
 
     void changeHiddenStatus(String uid);
 
+    void addMember(String uId, int id);
+
 }

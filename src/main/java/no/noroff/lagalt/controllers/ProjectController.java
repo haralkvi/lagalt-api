@@ -121,15 +121,4 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}/member")
-    public ResponseEntity<?> addMembers(@RequestBody Integer[]  userId, @PathVariable int id){
-        if(userId.length<1)return ResponseEntity.badRequest().build();
-        projectService.addMembers(userId, id);
-        return ResponseEntity.noContent().build();
-
-    }
-
-
-
-
 }
