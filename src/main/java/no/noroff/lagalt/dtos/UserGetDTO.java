@@ -7,7 +7,7 @@ import java.util.Set;
 @Data
 public class UserGetDTO {
 
-    private int id;
+    private String id;
     private String name;
     private String email;
     private String description;

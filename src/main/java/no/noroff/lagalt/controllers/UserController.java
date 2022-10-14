@@ -64,7 +64,7 @@ public class UserController {
                     content = @Content)
     })
     @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable int id) {
+    public ResponseEntity<?> getById(@PathVariable String id) {
         UserGetDTO user = userMapper.userToUserDTO(userService.findById(id));
         if (user != null){
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -84,7 +84,7 @@ public class UserController {
     })
     @GetMapping("current")
     public ResponseEntity<?> getByJwt(@AuthenticationPrincipal Jwt jwt) {
-        User userModel = userService.findByUid(jwt.getClaimAsString("sub"));
+        User userModel = userService.findById(jwt.getClaimAsString("sub"));
 
         if (userModel != null) {
             UserGetDTO userGetDTO = userMapper.userToUserDTO(userModel);
@@ -105,7 +105,7 @@ public class UserController {
     })
     @GetMapping("recommendations")
     public ResponseEntity<?> getRecommendations(@AuthenticationPrincipal Jwt jwt) {
-        User user = userService.findByUid(jwt.getClaimAsString("sub"));
+        User user = userService.findById(jwt.getClaimAsString("sub"));
 
         if (user != null) {
             Collection<ProjectGetDTO> recommendedProjects =
@@ -150,8 +150,8 @@ public class UserController {
     })
     @PostMapping("register")
     public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
-        User user = userService.addByUid(jwt);
-        URI uri = URI.create("api/v1/users/" + user.getUid());
+        User user = userService.addById(jwt);
+        URI uri = URI.create("api/v1/users/" + user.getId());
         return ResponseEntity.created(uri).build();
     }
 
@@ -165,7 +165,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable String id) {
         User user = userMapper.userPostDTOtoUser(inputUser);
         user.setId(id);
         User userPost = userService.update(user);
@@ -185,7 +185,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("skillset/{id}")
-    public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable int id){
+    public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable String id){
         if(skillsetPostDTO.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.addSkillset(skillsetPostDTO,id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -201,7 +201,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("history/{id}")
-    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable int id){
+    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable String id){
         if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.addToClickHistory(projectId,id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -217,7 +217,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("description/{id}")
-    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable Integer id){
+    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
         if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -234,8 +234,8 @@ public class UserController {
     })
     @PutMapping("update")
     public ResponseEntity<?> updateByJwt(@RequestBody UserPostDTO userPostDTO, @AuthenticationPrincipal Jwt jwt) {
-        String uid = jwt.getClaimAsString("sub");
-        User user = userService.findByUid(uid);
+        String id = jwt.getClaimAsString("sub");
+        User user = userService.findById(id);
 
         if (user == null) {
             return ResponseEntity.badRequest().build();
@@ -255,7 +255,7 @@ public class UserController {
                     content = @Content)
     })
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable int id){
+    public ResponseEntity<?> delete(@PathVariable String id){
         if (userService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -280,7 +280,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        userService.deleteByUid(uid);
+        userService.deleteById(uid);
         return ResponseEntity.noContent().build();
     }
 
@@ -296,19 +296,19 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}/member")
-    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int id){
-        String uid = jwt.getClaimAsString("sub");
-        if (uid == null) {
+    @PutMapping("{projectId}/member")
+    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId){
+        String id = jwt.getClaimAsString("sub");
+        if (id == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        userService.addMember(uid, id);
+        userService.addMember(id, projectId);
         return ResponseEntity.noContent().build();
     }
 
     //kan denne flyttes over i project igjen lol
     @PutMapping("{id}/members")
-    public ResponseEntity<?> addMember(@RequestBody Integer[] members, @PathVariable int id){
+    public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id){
         if (members.length==0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

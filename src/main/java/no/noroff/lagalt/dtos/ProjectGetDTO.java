@@ -10,9 +10,9 @@ public class ProjectGetDTO {
 
     private int id;
     private String name;
-    private int owner;
-    private Set<Integer> members;
-    private Set<Integer> userViews;
+    private String owner;
+    private Set<String> members;
+    private Set<String> userViews;
     private String category;
     private String status;
     private Collection<String> tags;

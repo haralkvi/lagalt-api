@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     private ApplicationService applicationService;
 
     @Override
-    public User findById(Integer integer) {
-        Optional<User> opt = userRepository.findById(integer);
+    public User findById(String id) {
+        Optional<User> opt = userRepository.findById(id);
         return opt.orElse(null);
     }
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         if (userRepository.existsById(id)) {
             User user = this.findById(id);
 
@@ -72,19 +72,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteByUid(String uid) {
-        userRepository.deleteByUid(uid);
-    }
-
-    @Override
     public Collection<Project> findRecommendations(User user) {
         return recommendationUtil.getRecommendedProjects(user);
     }
 
-    @Override
-    public User addByUid(Jwt jwt) {
+    public User addById(Jwt jwt) {
         User user = new User();
-        user.setUid(jwt.getClaimAsString("sub"));
+        user.setId(jwt.getClaimAsString("sub"));
         user.setName(jwt.getClaimAsString("name"));
         user.setEmail(jwt.getClaimAsString("email"));
         user.setHidden(false);
@@ -92,17 +86,12 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public User findByUid(String uid) {
-        return userRepository.findByUid(uid);
-       }
-
     /** Add skills to an specified users skillset
      *
       * @param skillsetPostDTO An array of Strings, these contain skills
      * @param id Integer that refers to an specific user
      */
-    public void addSkillset(String[] skillsetPostDTO, Integer id){
+    public void addSkillset(String[] skillsetPostDTO, String id){
         User user = this.findById(id);
         user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
         userRepository.save(user);
@@ -114,7 +103,7 @@ public class UserServiceImpl implements UserService {
      * @param id Integer that refers to an users id
      * @author Marius Olafsen
      */
-    public void addToClickHistory(Integer[] projectId, Integer id){
+    public void addToClickHistory(Integer[] projectId, String id){
         User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
         for(Integer s : projectId){
@@ -131,7 +120,7 @@ public class UserServiceImpl implements UserService {
      * @param id Refers to the id of an user
      * @author Marius Olafsen
      */
-    public void changeDescription(String[] description, Integer id){
+    public void changeDescription(String[] description, String id){
         User user = this.findById(id);
         user.setDescription(description[0]);
         userRepository.save(user);
@@ -145,7 +134,7 @@ public class UserServiceImpl implements UserService {
      * @author Marius Olafsen
      */
     public void changeHiddenStatus(String uid){
-        User user = this.findByUid(uid);
+        User user = this.findById(uid);
         user.setHidden(!user.isHidden());
         userRepository.save(user);
     }
@@ -159,7 +148,7 @@ public class UserServiceImpl implements UserService {
      */
     public void addMember(String uId, int id){
         Project project = projectService.findById(id);
-        User user = this.findByUid(uId);
+        User user = this.findById(uId);
         Set<User> users = project.getMembers();
         users.add(user);
         project.setMembers(users);
@@ -172,10 +161,10 @@ public class UserServiceImpl implements UserService {
      * @param id refers to an project
      * @author Marius Olafsen
      */
-    public void addMembers(Integer[] members, int id){
+    public void addMembers(String[] members, int id){
         Project project = projectService.findById(id);
         Set<User> users = project.getMembers();
-        for(Integer i : members){
+        for(String i : members){
             User user = this.findById(i);
             users.add(user);
         }

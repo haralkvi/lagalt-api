@@ -52,7 +52,7 @@ public abstract class CommentMapper {
     }
 
     @Named("idToUser")
-    User mapToUser(int id){
+    User mapToUser(String id){
         return userService.findById(id);
     }
 
