@@ -88,12 +88,16 @@ public class UserServiceImpl implements UserService {
 
     /** Add skills to an specified users skillset
      *
-      * @param skillsetPostDTO An array of Strings, these contain skills
+     * @param skills An array of Strings, these contain skills
      * @param id Integer that refers to an specific user
      */
-    public void addSkillset(String[] skillsetPostDTO, String id){
+    public void addSkillset(String[] skills, String id){
         User user = this.findById(id);
-        user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
+        Set<String> skillSet = user.getSkillSet();
+
+        Collections.addAll(skillSet, skills);
+
+        user.setSkillSet(skillSet);
         userRepository.save(user);
     }
 
@@ -170,5 +174,10 @@ public class UserServiceImpl implements UserService {
         }
         project.setMembers(users);
         projectService.update(project);
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        return userRepository.existsById(id);
     }
 }
