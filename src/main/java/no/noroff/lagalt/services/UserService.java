@@ -14,7 +14,7 @@ public interface UserService extends CrudService<User, String> {
 
     void addSkillset(String skill, String id);
 
-    void addToClickHistory(Integer[] projectId, String userId);
+    void addToClickHistory(int projectId, String userId);
 
     void changeDescription(String[] userPostDto, String integer);
 

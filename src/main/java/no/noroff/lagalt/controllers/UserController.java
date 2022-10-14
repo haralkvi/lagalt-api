@@ -10,6 +10,7 @@ import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
+import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private ProjectService projectService;
 
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
@@ -119,7 +123,6 @@ public class UserController {
 
     }
 
-
     @Operation(summary = "Creates a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
@@ -203,10 +206,12 @@ public class UserController {
                     description = "Malformed body, nothing has been added",
                     content = @Content)
     })
-    @PutMapping("history/{id}")
-    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable String id){
-        if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.addToClickHistory(projectId,id);
+    @PutMapping("{id}/click-history")
+    public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
+        if (!projectService.existsById(projectId)) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.addToClickHistory(projectId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
