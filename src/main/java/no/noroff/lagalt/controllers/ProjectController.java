@@ -127,14 +127,15 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("add-member")
+    @PutMapping("{projectId}/add-member")
     public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
-        String id = jwt.getClaimAsString("sub");
-        if (id == null) {
+        String uId = jwt.getClaimAsString("sub");
+
+        if (uId == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        userService.addMember(id, projectId);
+        userService.addMember(uId, projectId);
         return ResponseEntity.noContent().build();
     }
 
