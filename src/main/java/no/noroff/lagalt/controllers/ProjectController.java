@@ -127,9 +127,10 @@ public class ProjectController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
-            return ResponseEntity.badRequest().build();
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+
         projectService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
