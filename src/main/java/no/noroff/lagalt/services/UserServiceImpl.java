@@ -88,10 +88,10 @@ public class UserServiceImpl implements UserService {
 
     /** Add skills to an specified users skillset
      *
-     * @param skills An array of Strings, these contain skills
+     * @param skills A string describing a skill
      * @param id Integer that refers to an specific user
      */
-    public void addSkillset(String[] skills, String id){
+    public void addSkillset(String skills, String id){
         User user = this.findById(id);
         Set<String> skillSet = user.getSkillSet();
 

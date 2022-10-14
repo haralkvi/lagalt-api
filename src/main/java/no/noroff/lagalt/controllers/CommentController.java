@@ -28,6 +28,7 @@ public class CommentController {
     @Autowired
     private CommentMapper commentMapper;
 
+
     @Operation(summary = "Gets all comments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",

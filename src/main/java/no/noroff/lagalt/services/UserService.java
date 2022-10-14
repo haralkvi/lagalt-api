@@ -12,7 +12,7 @@ public interface UserService extends CrudService<User, String> {
 
     Collection<Project> findRecommendations(User user);
 
-    void addSkillset(String[] skillsetPostDTO, String id);
+    void addSkillset(String skill, String id);
 
     void addToClickHistory(Integer[] projectId, String userId);
 

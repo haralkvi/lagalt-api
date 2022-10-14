@@ -184,12 +184,13 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("{id}/skillset")
-    public ResponseEntity<?> addToSkillset(@RequestBody String[] skills, @PathVariable String id) {
-        if (userService.existsById(id) == false) {
+    @PutMapping("{id}/skills")
+    public ResponseEntity<?> addToSkillSet(@RequestBody String skill, @PathVariable String id) {
+        if (!userService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userService.addSkillset(skills, id);
+
+        userService.addSkillset(skill, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
