@@ -49,9 +49,6 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Comment> comments;
 
-    @Column(name="project_image")
-    private String image;
-
     @Column(name="project_link")
     private String link;
 

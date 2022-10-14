@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
+import no.noroff.lagalt.dtos.ProjectPutDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
@@ -101,11 +102,11 @@ public class ProjectController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Project project, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody ProjectPutDTO project, @PathVariable int id) {
         if (id != project.getId()) {
             return ResponseEntity.badRequest().build();
         }
-        projectService.update(project);
+        projectService.update(projectMapper.projectPutDTOToProject(project));
         return ResponseEntity.noContent().build();
     }
 
