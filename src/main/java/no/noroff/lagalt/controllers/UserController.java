@@ -184,7 +184,7 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("skillset/{id}")
+    @PutMapping("{id}/skillset")
     public ResponseEntity<?> addToSkillset(@RequestBody String[] skillsetPostDTO, @PathVariable int id){
         if(skillsetPostDTO.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.addSkillset(skillsetPostDTO,id);
@@ -198,12 +198,15 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing has been added",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The project ID was not found",
                     content = @Content)
     })
-    @PutMapping("history/{id}")
+    @PutMapping("{id}/history")
     public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable int id){
         if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.addToClickHistory(projectId,id);
+        if(!(userService.addToClickHistory(projectId,id)))return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -216,7 +219,7 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("description/{id}")
+    @PutMapping("{id}/description")
     public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable Integer id){
         if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.changeDescription(description, id);

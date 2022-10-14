@@ -114,15 +114,16 @@ public class UserServiceImpl implements UserService {
      * @param id Integer that refers to an users id
      * @author Marius Olafsen
      */
-    public void addToClickHistory(Integer[] projectId, Integer id){
+    public boolean addToClickHistory(Integer[] projectId, Integer id){
         User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
-        for(Integer s : projectId){
-            Project project = projectService.findById(s);
+        //for(Integer s : projectId){
+            Project project = projectService.findById(projectId[0]);
+            if(project==null)return false;
             projects.add(project);
-        }
         user.setProjectsHistory(projects);
         userRepository.save(user);
+        return true;
     }
 
     /** Changes the description of the current user
