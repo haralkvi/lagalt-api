@@ -8,6 +8,6 @@ import no.noroff.lagalt.models.ProjectStatus;
 public class ProjectPostDTO {
     private String name;
     private int owner;
-    private String status;
-    private String category;
+    private ProjectStatus status;
+    private ProjectCategory category;
 }
