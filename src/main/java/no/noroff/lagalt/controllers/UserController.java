@@ -224,7 +224,7 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("description/{id}")
+    @PutMapping("{id}/description")
     public ResponseEntity<?> changeDescription(@RequestBody String description, @PathVariable String id){
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
