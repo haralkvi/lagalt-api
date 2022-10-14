@@ -35,6 +35,10 @@ public class Project {
     @Column(name="project_category")
     private ProjectCategory category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="project_status")
+    private ProjectStatus status;
+
     @ElementCollection
     @Column(name="tags")
     private Collection<String> tags;

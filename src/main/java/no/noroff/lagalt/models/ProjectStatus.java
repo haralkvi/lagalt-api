@@ -1,6 +1,6 @@
 package no.noroff.lagalt.models;
 
-public enum ApplicationStatus {
+public enum ProjectStatus {
     FOUNDING,
     IN_PROGRESS,
     STALLED,
