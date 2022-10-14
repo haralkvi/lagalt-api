@@ -14,6 +14,7 @@ public class ProjectGetDTO {
     private Set<String> members;
     private Set<String> userViews;
     private String category;
+    private String status;
     private Collection<String> tags;
     private String summary;
     private Set<Integer> comments;

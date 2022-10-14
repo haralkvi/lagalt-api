@@ -6,8 +6,7 @@ import lombok.Data;
 public class ApplicationGetDTO {
 
     private int application_id;
-    private int user;
-    private String project;
-    private String status;
+    private String user;
+    private int project;
     private String time;
 }

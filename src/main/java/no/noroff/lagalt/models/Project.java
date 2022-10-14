@@ -31,8 +31,13 @@ public class Project {
     @ManyToMany(mappedBy = "projectsHistory")
     private Set<User> userViews;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="project_category")
-    private String category;
+    private ProjectCategory category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="project_status")
+    private ProjectStatus status;
 
     @ElementCollection
     @Column(name="tags")
