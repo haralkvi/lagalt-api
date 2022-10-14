@@ -84,11 +84,17 @@ public class ProjectController {
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
-        Project project  = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
-        if(project != null){
+        if (!userService.existsById(projectInput.getOwner())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Project project = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
+
+        if (project != null) {
             URI location = URI.create("projects/" + project.getId());
             return ResponseEntity.created(location).build();
         }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
