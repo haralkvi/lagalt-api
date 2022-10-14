@@ -165,15 +165,15 @@ public class UserServiceImpl implements UserService {
      * @param id refers to an project
      * @author Marius Olafsen
      */
-    public void addMembers(String[] members, int id){
+    @Transactional
+    public void addMembers(String[] members, int id) {
         Project project = projectService.findById(id);
-        Set<User> users = project.getMembers();
-        for(String i : members){
-            User user = this.findById(i);
-            users.add(user);
+
+        for (String member : members){
+            User user = this.findById(member);
+            user.getProjectsParticipated().add(project);
+            userRepository.save(user);
         }
-        project.setMembers(users);
-        projectService.update(project);
     }
 
     @Override

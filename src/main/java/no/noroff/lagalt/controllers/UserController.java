@@ -298,24 +298,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{projectId}/member")
-    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId){
-        String id = jwt.getClaimAsString("sub");
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.addMember(id, projectId);
-        return ResponseEntity.noContent().build();
-    }
-
-    //kan denne flyttes over i project igjen lol
-    @PutMapping("{id}/members")
-    public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id){
-        if (members.length==0) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.addMembers(members, id);
-        return ResponseEntity.noContent().build();
-    }
-
 }
