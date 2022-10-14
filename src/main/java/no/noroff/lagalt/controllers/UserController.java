@@ -225,8 +225,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("description/{id}")
-    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
-        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> changeDescription(@RequestBody String description, @PathVariable String id){
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -123,15 +123,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /** Changes the description of the current user
+    /**
+     * Changes the description of the current user
      *
      * @param description An array of strings where only 0 is used
-     * @param id Refers to the id of an user
+     * @param id          Refers to the id of an user
      * @author Marius Olafsen
      */
-    public void changeDescription(String[] description, String id){
+    public void changeDescription(String description, String id){
         User user = this.findById(id);
-        user.setDescription(description[0]);
+        user.setDescription(description);
         userRepository.save(user);
       }
 
