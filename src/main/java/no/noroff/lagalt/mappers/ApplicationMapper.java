@@ -45,7 +45,7 @@ public abstract class ApplicationMapper {
     }
 
     @Named("idToUser")
-    User mapToUser(int id){
+    User mapToUser(String id){
         return userService.findById(id);
     }
 

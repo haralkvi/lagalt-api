@@ -13,11 +13,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private int id;
-
-    private String uid;
+    @Column(name = "user_id", unique = true, nullable = false, updatable = false)
+    private String id;
 
     @Column(name = "user_name", nullable = false)
     private String name;

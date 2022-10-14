@@ -45,7 +45,7 @@ public abstract class ProjectMapper {
     }
 
     @Named("usersToIds")
-    Set<Integer> mapToInteger(Set<User> users) {
+    Set<String> mapToString(Set<User> users) {
         if (users == null)
             return null;
         return users.stream()
@@ -69,7 +69,7 @@ public abstract class ProjectMapper {
     }
 
     @Named("idToOwner")
-    User mapToUser(int id){
+    User mapToUser(String id){
         return userService.findById(id);
     }
 

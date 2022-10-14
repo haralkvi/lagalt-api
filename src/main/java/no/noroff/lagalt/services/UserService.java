@@ -6,26 +6,22 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collection;
 
-public interface UserService extends CrudService<User, Integer> {
+public interface UserService extends CrudService<User, String> {
 
-    User addByUid(Jwt jwt);
-
-    User findByUid(String uid);
-
-    void deleteByUid(String uid);
+    User addById(Jwt jwt);
 
     Collection<Project> findRecommendations(User user);
 
-    void addSkillset(String[] skillsetPostDTO, Integer id);
+    void addSkillset(String[] skillsetPostDTO, String id);
 
-    void addToClickHistory(Integer[] projectId,Integer userId);
+    void addToClickHistory(Integer[] projectId, String userId);
 
-    void changeDescription(String[] userPostDto, Integer integer);
+    void changeDescription(String[] userPostDto, String integer);
 
     void changeHiddenStatus(String uid);
 
     void addMember(String uId, int id);
 
-    void addMembers(Integer[] members, int id);
+    void addMembers(String[] members, int id);
 
 }
