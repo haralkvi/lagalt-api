@@ -44,4 +44,16 @@ public class CommentServiceImpl implements CommentService{
     public void delete(Comment entity) {
         commentRepository.delete(entity);
     }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return commentRepository.existsById(id);
+    }
+
+    @Override
+    public void updateText(String text, int id) {
+        Comment comment = this.findById(id);
+        comment.setText(text);
+        commentRepository.save(comment);
+    }
 }

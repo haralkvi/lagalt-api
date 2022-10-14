@@ -23,6 +23,4 @@ public interface UserService extends CrudService<User, String> {
     void addMember(String uId, int id);
 
     void addMembers(String[] members, int id);
-
-    boolean existsById(String id);
 }

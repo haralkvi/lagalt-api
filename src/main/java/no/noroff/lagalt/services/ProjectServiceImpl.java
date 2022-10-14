@@ -74,4 +74,9 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.delete(entity);
     }
 
+    @Override
+    public boolean existsById(Integer id) {
+        return projectRepository.existsById(id);
+    }
+
 }
