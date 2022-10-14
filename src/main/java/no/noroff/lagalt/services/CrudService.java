@@ -15,8 +15,5 @@ import java.util.Collection;
         void deleteById(ID id);
 
         void delete(T entity);
-
-        boolean existsById(ID id);
-
 }
 
