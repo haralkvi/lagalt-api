@@ -20,6 +20,7 @@ public abstract class UserMapper {
     @Mapping(target = "projectsOwned", source = "projectsOwned", qualifiedByName = "projectsToIds")
     public abstract UserGetDTO userToUserDTO(User user);
 
+    @Mapping(target = "hidden", constant = "false")
     public abstract User userPostDTOtoUser(UserPostDTO userPostDTO);
 
     public Collection<UserGetDTO> userToUserDTO(Collection<User> users) {
