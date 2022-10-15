@@ -39,7 +39,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project update(Project updatedProject) {
-        System.out.println(updatedProject.getId());
         Project project = this.findById(updatedProject.getId());
         project.setName(updatedProject.getName());
         project.setCategory(updatedProject.getCategory());
