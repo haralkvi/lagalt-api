@@ -40,7 +40,6 @@ public class Project {
     private ProjectStatus status;
 
     @ElementCollection
-    @Column(name="tags")
     private Collection<String> tags;
 
     @Column(name="summary")
