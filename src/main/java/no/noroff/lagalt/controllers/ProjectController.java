@@ -6,12 +6,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
+import no.noroff.lagalt.dtos.ProjectPutDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,6 +31,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Operation(summary = "Gets all projects")
     @ApiResponses(value = {
@@ -77,11 +84,17 @@ public class ProjectController {
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
-        Project project  = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
-        if(project != null){
+        if (!userService.existsById(projectInput.getOwner())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Project project = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
+
+        if (project != null) {
             URI location = URI.create("projects/" + project.getId());
             return ResponseEntity.created(location).build();
         }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -95,11 +108,11 @@ public class ProjectController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Project project, @PathVariable int id) {
+    public ResponseEntity<?> update(@RequestBody ProjectPutDTO project, @PathVariable int id) {
         if (id != project.getId()) {
             return ResponseEntity.badRequest().build();
         }
-        projectService.update(project);
+        projectService.update(projectMapper.projectPutDTOToProject(project));
         return ResponseEntity.noContent().build();
     }
 
@@ -114,10 +127,34 @@ public class ProjectController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
-            return ResponseEntity.badRequest().build();
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+
         projectService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{projectId}/add-member")
+    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
+        String uId = jwt.getClaimAsString("sub");
+
+        if (uId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userService.addMember(uId, projectId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}/members")
+    public ResponseEntity<?> addMember(@RequestBody String member, @PathVariable int id) {
+
+        if (!userService.existsById(member)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userService.addMember(member, id);
         return ResponseEntity.noContent().build();
     }
 

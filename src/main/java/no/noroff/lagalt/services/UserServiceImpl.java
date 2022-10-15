@@ -88,10 +88,10 @@ public class UserServiceImpl implements UserService {
 
     /** Add skills to an specified users skillset
      *
-     * @param skills An array of Strings, these contain skills
+     * @param skills A string describing a skill
      * @param id Integer that refers to an specific user
      */
-    public void addSkillset(String[] skills, String id){
+    public void addSkillset(String skills, String id){
         User user = this.findById(id);
         Set<String> skillSet = user.getSkillSet();
 
@@ -107,26 +107,32 @@ public class UserServiceImpl implements UserService {
      * @param id Integer that refers to an users id
      * @author Marius Olafsen
      */
-    public void addToClickHistory(Integer[] projectId, String id){
+    public void addToClickHistory(int projectId, String id){
+        // find user and user's set of clicked projects
         User user = this.findById(id);
         Set<Project> projects = user.getProjectsHistory();
-        for(Integer s : projectId){
-            Project project = projectService.findById(s);
-            projects.add(project);
-        }
+
+        // find project to be added to user's click history
+        Project project = projectService.findById(projectId);
+
+        // add project to user's click history
+        projects.add(project);
+
+        // persist changes
         user.setProjectsHistory(projects);
         userRepository.save(user);
     }
 
-    /** Changes the description of the current user
+    /**
+     * Changes the description of the current user
      *
      * @param description An array of strings where only 0 is used
-     * @param id Refers to the id of an user
+     * @param id          Refers to the id of an user
      * @author Marius Olafsen
      */
-    public void changeDescription(String[] description, String id){
+    public void changeDescription(String description, String id){
         User user = this.findById(id);
-        user.setDescription(description[0]);
+        user.setDescription(description);
         userRepository.save(user);
       }
 
@@ -150,30 +156,24 @@ public class UserServiceImpl implements UserService {
      * @param id refers to an project
      * @author Marius Olafsen
      */
+    @Transactional
     public void addMember(String uId, int id){
         Project project = projectService.findById(id);
         User user = this.findById(uId);
-        Set<User> users = project.getMembers();
-        users.add(user);
-        project.setMembers(users);
-        projectService.update(project);
+        user.getProjectsParticipated().add(project);
+        userRepository.save(user);
     }
 
-    /** Adds member(s) to an specified project
+    /** Adds member(s) to a specified project
      *
-     * @param members int that refers to users
-     * @param id refers to an project
+     * @param members arr of String that refers to users
+     * @param id refers to a project
      * @author Marius Olafsen
      */
-    public void addMembers(String[] members, int id){
-        Project project = projectService.findById(id);
-        Set<User> users = project.getMembers();
-        for(String i : members){
-            User user = this.findById(i);
-            users.add(user);
+    public void addMembers(String[] members, int id) {
+        for (String member : members){
+            this.addMember(member, id);
         }
-        project.setMembers(users);
-        projectService.update(project);
     }
 
     @Override

@@ -2,14 +2,13 @@ package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
+import no.noroff.lagalt.dtos.ProjectPutDTO;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.UserService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public abstract class ProjectMapper {
     @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
-    @Mapping(target = "owner", source = "owner", qualifiedByName =  "idToOwner")
+    @Mapping(target = "owner", source = "owner", qualifiedByName = "idToOwner")
     public abstract Project projectPostDTOtoProject(ProjectPostDTO projectPostDTO);
 
     public Collection<ProjectGetDTO> projectToProjectDTO(Collection<Project> projects) {
@@ -69,8 +68,16 @@ public abstract class ProjectMapper {
     }
 
     @Named("idToOwner")
-    User mapToUser(String id){
+    User mapToUser(String id) {
         return userService.findById(id);
     }
 
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "members", ignore = true)
+    @Mapping(target = "userViews", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "applications", ignore = true)
+    public abstract Project projectPutDTOToProject(ProjectPutDTO projectPutDTO);
+
+    public abstract ProjectPutDTO projectToProjectPutDTO(Project project);
 }

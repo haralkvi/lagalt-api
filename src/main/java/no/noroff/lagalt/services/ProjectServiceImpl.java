@@ -38,8 +38,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project update(Project entity) {
-        return projectRepository.save(entity);
+    public Project update(Project updatedProject) {
+        Project project = this.findById(updatedProject.getId());
+        project.setName(updatedProject.getName());
+        project.setCategory(updatedProject.getCategory());
+        project.setStatus(updatedProject.getStatus());
+        project.setSummary(updatedProject.getSummary());
+        project.setLink(updatedProject.getLink());
+        return projectRepository.save(project);
     }
 
     @Override
@@ -65,6 +71,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void delete(Project entity) {
         projectRepository.delete(entity);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return projectRepository.existsById(id);
     }
 
 }

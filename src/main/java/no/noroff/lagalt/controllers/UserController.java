@@ -10,6 +10,7 @@ import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
+import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private ProjectService projectService;
 
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
@@ -119,7 +123,6 @@ public class UserController {
 
     }
 
-
     @Operation(summary = "Creates a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
@@ -184,12 +187,13 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("{id}/skillset")
-    public ResponseEntity<?> addToSkillset(@RequestBody String[] skills, @PathVariable String id) {
-        if (userService.existsById(id) == false) {
+    @PutMapping("{id}/skills")
+    public ResponseEntity<?> addToSkillSet(@RequestBody String skill, @PathVariable String id) {
+        if (!userService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userService.addSkillset(skills, id);
+
+        userService.addSkillset(skill, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -202,10 +206,12 @@ public class UserController {
                     description = "Malformed body, nothing has been added",
                     content = @Content)
     })
-    @PutMapping("history/{id}")
-    public ResponseEntity<?> addToClickHistory(@RequestBody Integer[] projectId, @PathVariable String id){
-        if(projectId.length > 0)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        userService.addToClickHistory(projectId,id);
+    @PutMapping("{id}/click-history")
+    public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
+        if (!projectService.existsById(projectId)) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.addToClickHistory(projectId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -218,9 +224,8 @@ public class UserController {
                     description = "Malformed body, nothing changed",
                     content = @Content)
     })
-    @PutMapping("description/{id}")
-    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
-        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @PutMapping("{id}/description")
+    public ResponseEntity<?> changeDescription(@RequestBody String description, @PathVariable String id){
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -295,26 +300,6 @@ public class UserController {
         }
 
         userService.changeHiddenStatus(uid);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("{projectId}/member")
-    public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId){
-        String id = jwt.getClaimAsString("sub");
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.addMember(id, projectId);
-        return ResponseEntity.noContent().build();
-    }
-
-    //kan denne flyttes over i project igjen lol
-    @PutMapping("{id}/members")
-    public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id){
-        if (members.length==0) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.addMembers(members, id);
         return ResponseEntity.noContent().build();
     }
 

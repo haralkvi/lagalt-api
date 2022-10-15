@@ -12,17 +12,15 @@ public interface UserService extends CrudService<User, String> {
 
     Collection<Project> findRecommendations(User user);
 
-    void addSkillset(String[] skillsetPostDTO, String id);
+    void addSkillset(String skill, String id);
 
-    void addToClickHistory(Integer[] projectId, String userId);
+    void addToClickHistory(int projectId, String userId);
 
-    void changeDescription(String[] userPostDto, String integer);
+    void changeDescription(String description, String integer);
 
     void changeHiddenStatus(String uid);
 
     void addMember(String uId, int id);
 
     void addMembers(String[] members, int id);
-
-    boolean existsById(String id);
 }

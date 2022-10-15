@@ -40,7 +40,6 @@ public class Project {
     private ProjectStatus status;
 
     @ElementCollection
-    @Column(name="tags")
     private Collection<String> tags;
 
     @Column(name="summary")
@@ -48,9 +47,6 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private Set<Comment> comments;
-
-    @Column(name="project_image")
-    private String image;
 
     @Column(name="project_link")
     private String link;

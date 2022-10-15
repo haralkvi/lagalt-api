@@ -28,6 +28,7 @@ public class CommentController {
     @Autowired
     private CommentMapper commentMapper;
 
+
     @Operation(summary = "Gets all comments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -85,24 +86,6 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @Operation(summary = "Updates a specified comment")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "The comment has been updated",
-                    content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
-                    content = @Content)
-    })
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Comment comment, @PathVariable int id) {
-        if (id != comment.getId()) {
-            return ResponseEntity.badRequest().build();
-        }
-        commentService.update(comment);
-        return ResponseEntity.noContent().build();
-    }
-
     @Operation(summary = "Deletes a specified comment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -118,6 +101,15 @@ public class CommentController {
             return ResponseEntity.badRequest().build();
         }
         commentService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}/text")
+    public ResponseEntity editComment(@RequestBody String text, @PathVariable int id) {
+        if (!commentService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        commentService.updateText(text, id);
         return ResponseEntity.noContent().build();
     }
 
