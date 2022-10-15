@@ -52,8 +52,6 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public void updateText(String text, int id) {
-        Comment comment = this.findById(id);
-        comment.setText(text);
-        commentRepository.save(comment);
+        commentRepository.updateTextById(text, id);
     }
 }
