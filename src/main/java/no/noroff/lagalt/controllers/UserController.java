@@ -188,11 +188,12 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}/skillset")
-    public ResponseEntity<?> addToSkillset(@RequestBody String[] skills, @PathVariable String id) {
+    public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
         if (!userService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userService.addSkillset(skills, id);
+
+        userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
