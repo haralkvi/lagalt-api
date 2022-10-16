@@ -86,18 +86,14 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    /** Add skills to an specified users skillset
+    /** Updates a given user's skill set
      *
-     * @param skills A string describing a skill
-     * @param id Integer that refers to an specific user
+     * @param skills An array of Strings, these contain skills
+     * @param id String that refers to an specific user
      */
-    public void addSkillset(String skills, String id){
+    public void updateSkillset(String[] skills, String id){
         User user = this.findById(id);
-        Set<String> skillSet = user.getSkillSet();
-
-        Collections.addAll(skillSet, skills);
-
-        user.setSkillSet(skillSet);
+        user.setSkillSet(new HashSet<>(Arrays.asList(skills)));
         userRepository.save(user);
     }
 
