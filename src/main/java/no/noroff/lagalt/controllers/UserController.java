@@ -161,7 +161,7 @@ public class UserController {
 
     @Operation(summary = "Updates a specified user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "204",
                     description = "The user has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
