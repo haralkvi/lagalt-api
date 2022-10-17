@@ -9,6 +9,7 @@ import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ProjectMapper projectMapper;
@@ -118,6 +122,16 @@ public class ProjectController {
             return ResponseEntity.badRequest().build();
         }
         projectService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //VIKTIG ENDRING: FLYTTET HER FRA USER
+    @PutMapping("{id}/add_member")
+    public ResponseEntity<?> addMember(@RequestBody Integer[] members, @PathVariable int id){
+        if (members.length==0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.addMembers(members, id);
         return ResponseEntity.noContent().build();
     }
 
