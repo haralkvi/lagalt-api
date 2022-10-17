@@ -9,6 +9,7 @@ import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.exceptions.EmailAlreadyExistsException;
 import no.noroff.lagalt.exceptions.IdAlreadyExistsException;
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
@@ -287,8 +288,8 @@ public class UserController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable String id){
-        if (userService.findById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!userService.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
