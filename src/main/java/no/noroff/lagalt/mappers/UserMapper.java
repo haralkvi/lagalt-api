@@ -4,6 +4,7 @@ import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
+import no.noroff.lagalt.models.UserPutDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -22,6 +23,9 @@ public abstract class UserMapper {
 
     @Mapping(target = "hidden", constant = "false")
     public abstract User userPostDTOtoUser(UserPostDTO userPostDTO);
+
+    @Mapping(target = "hidden", constant = "false")
+    public abstract User userPutDTOtoUser(UserPutDTO userPutDTO);
 
     public Collection<UserGetDTO> userToUserDTO(Collection<User> users) {
         if (users == null) {
