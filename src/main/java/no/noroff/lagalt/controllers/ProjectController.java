@@ -148,13 +148,15 @@ public class ProjectController {
     }
 
     @PutMapping("{id}/members")
-    public ResponseEntity<?> addMember(@RequestBody String member, @PathVariable int id) {
+    public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
-        if (!userService.existsById(member)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        for (String uId : members) {
+            if (!userService.existsById(uId)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
 
-        userService.addMember(member, id);
+        userService.addMembers(members, id);
         return ResponseEntity.noContent().build();
     }
 
