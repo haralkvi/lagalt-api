@@ -9,6 +9,8 @@ import no.noroff.lagalt.dtos.CommentPostDTO;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.CommentService;
+import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,12 @@ public class CommentController {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private UserService userService;
 
 
     @Operation(summary = "Gets all comments")
@@ -72,18 +80,19 @@ public class CommentController {
             @ApiResponse(responseCode = "201",
                     description = "Comment successfully created",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing created",
+            @ApiResponse(responseCode = "404",
+                    description = "Either the project or the user was not found, nothing has been created",
                     content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
-        if(comment != null){
-            URI location = URI.create("comments/" + comment.getId());
-            return ResponseEntity.created(location).build();
+        //IKKE BEST PRACTICE PROBABLY MEN UNNGÅR CIRCULAR REFERENCES
+        if(!(projectService.existsById(comment.getProject().getId()))|!(userService.existsById(comment.getUser().getId()))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        URI location = URI.create("comments/" + comment.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "Deletes a specified comment")
