@@ -170,7 +170,7 @@ public class UserController {
     })
     @PutMapping("{id}")
     public ResponseEntity<?> update(@RequestBody UserPutDTO inputUser, @PathVariable String id) {
-        if (id != inputUser.getId()) {
+        if (!id.equals(inputUser.getId())) {
             return ResponseEntity.badRequest().build();
         }
 
