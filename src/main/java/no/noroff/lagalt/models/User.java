@@ -49,8 +49,13 @@ public class User {
 
     private boolean hidden;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Application> applications;
+    @ManyToMany
+    @JoinTable(
+            name = "user_project_applications",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")}
+    )
+    private Set<Project> projectsAppliedTo;
 
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;

@@ -3,7 +3,6 @@ package no.noroff.lagalt.mappers;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.dtos.ProjectPutDTO;
-import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
@@ -26,7 +25,7 @@ public abstract class ProjectMapper {
     @Mapping(target = "members", source = "members", qualifiedByName = "usersToIds")
     @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToIds")
     @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToIds")
-    @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
+    @Mapping(target = "applicants", source = "applicants", qualifiedByName = "usersToIds")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
     @Mapping(target = "owner", source = "owner", qualifiedByName = "idToOwner")
@@ -59,14 +58,6 @@ public abstract class ProjectMapper {
                 .map(Comment::getId).collect(Collectors.toSet());
     }
 
-    @Named("applicationsToIds")
-    Set<Integer> mapApplicationsToIds(Set<Application> application) {
-        if (application == null)
-            return null;
-        return application.stream()
-                .map(Application::getApplication_id).collect(Collectors.toSet());
-    }
-
     @Named("idToOwner")
     User mapToUser(String id) {
         return userService.findById(id);
@@ -76,7 +67,7 @@ public abstract class ProjectMapper {
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "userViews", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "applications", ignore = true)
+    @Mapping(target = "applicants", ignore = true)
     public abstract Project projectPutDTOToProject(ProjectPutDTO projectPutDTO);
 
     public abstract ProjectPutDTO projectToProjectPutDTO(Project project);

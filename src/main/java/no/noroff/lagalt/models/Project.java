@@ -51,8 +51,8 @@ public class Project {
     @Column(name="project_link")
     private String link;
 
-    @OneToMany(mappedBy = "project")
-    private Set<Application> applications;
+    @ManyToMany(mappedBy = "projectsAppliedTo")
+    private Set<User> applicants;
 
     public boolean removeUserFromHistory(User user) {
         return userViews.remove(user);

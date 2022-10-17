@@ -16,9 +16,6 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectRepository projectRepository;
 
     @Autowired
-    private ApplicationService applicationService;
-
-    @Autowired
     private CommentService commentService;
 
     @Override
@@ -54,13 +51,14 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectRepository.existsById(id)) {
             Project project = this.findById(id);
 
-            // Users who have owned, been member of or viewed a project are not deleted when project is deleted
+            // Users who have owned, been member of, applied to or viewed a
+            // project are not deleted when project is deleted
             project.getOwner().getProjectsOwned().remove(project);
             project.getMembers().forEach(member -> member.getProjectsParticipated().remove(project));
             project.getUserViews().forEach(viewer -> viewer.getProjectsHistory().remove(project));
+            project.getApplicants().forEach(applicant -> applicant.getProjectsAppliedTo().remove(project));
 
-            // Applications and comments belonging to a project are deleted when project is deleted
-            project.getApplications().forEach(application -> applicationService.delete(application));
+            // Comments belonging to a project are deleted when project is deleted
             project.getComments().forEach(comment -> commentService.delete(comment));
 
             // project can safely be deleted

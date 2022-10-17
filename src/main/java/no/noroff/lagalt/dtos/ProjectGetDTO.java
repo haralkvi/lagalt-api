@@ -20,6 +20,6 @@ public class ProjectGetDTO {
     private Set<Integer> comments;
     private String image;
     private String link;
-    private Set<Integer> applications;
+    private Set<String> applicants;
 
 }

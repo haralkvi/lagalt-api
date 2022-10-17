@@ -21,14 +21,3 @@ INSERT INTO comment (text, time, project_id, user_id)
 VALUES ('Dette er den siste meldingen', '01.01.01', 1, 2);
 INSERT INTO comment (text, time, project_id, user_id)
 VALUES ('What is the meaning of life', '01.01.01', 2, 2);
-INSERT INTO application (time, project_id, user_id)
-VALUES ('01.September 2014',1,1);
-INSERT INTO application (time, project_id, user_id)
-VALUES ('02.September 2016',2,1);
-INSERT INTO application (time, project_id, user_id)
-VALUES ('03.September 2015',3,1);
-INSERT INTO application (time, project_id, user_id)
-VALUES ('05.September 2017',4,2);
-INSERT INTO application (time, project_id, user_id)
-VALUES ('07.September 2019',4,3);
-
