@@ -15,6 +15,7 @@ public class UserGetDTO {
     private Set<Integer> projectsOwned;
     private Set<Integer> projectsHistory;
     private Set<Integer> projectsParticipated;
+    private Set<Integer> projectsAppliedTo;
     private boolean hidden;
     private boolean admin;
 
