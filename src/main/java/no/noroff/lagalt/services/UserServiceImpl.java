@@ -43,8 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User entity) {
-        return userRepository.save(entity);
+    public User update(User updatedUser) {
+        User user = this.findById(updatedUser.getId());
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+        return userRepository.save(user);
     }
 
     @Override

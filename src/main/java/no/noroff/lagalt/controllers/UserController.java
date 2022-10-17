@@ -10,6 +10,7 @@ import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
+import no.noroff.lagalt.models.UserPutDTO;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,7 +161,7 @@ public class UserController {
 
     @Operation(summary = "Updates a specified user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "204",
                     description = "The user has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
@@ -168,15 +169,15 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody UserPostDTO inputUser, @PathVariable String id) {
-        User user = userMapper.userPostDTOtoUser(inputUser);
-        user.setId(id);
-        User userPost = userService.update(user);
-        if(userPost != null){
-            return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody UserPutDTO inputUser, @PathVariable String id) {
+        if (!id.equals(inputUser.getId())) {
+            return ResponseEntity.badRequest().build();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        userService.update(userMapper.userPutDTOtoUser(inputUser));
+        return ResponseEntity.noContent().build();
     }
+
 
     @Operation(summary = "Updates a given user's set of skills")
     @ApiResponses(value = {
