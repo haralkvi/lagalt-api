@@ -1,6 +1,5 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ProjectDetails;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.dtos.ProjectPutDTO;
@@ -24,7 +23,7 @@ public abstract class ProjectMapper {
     UserService userService;
 
     @Mapping(target = "owner", source = "owner.id")
-    @Mapping(target = "members", source = "members", qualifiedByName = "usersToIds")
+    @Mapping(target = "members", source = "members", qualifiedByName = "usersToUserDetails")
     @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToIds")
     @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToIds")
     @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
@@ -82,10 +81,4 @@ public abstract class ProjectMapper {
 
     public abstract ProjectPutDTO projectToProjectPutDTO(Project project);
 
-    abstract Project projectDetailsToProject(ProjectDetails projectDetails);
-
-    abstract ProjectDetails projectToProjectDetails(Project project);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract Project updateProjectFromProjectDetails(ProjectDetails projectDetails, @MappingTarget Project project);
 }

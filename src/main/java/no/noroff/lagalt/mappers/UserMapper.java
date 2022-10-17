@@ -45,10 +45,4 @@ public abstract class UserMapper {
                 .map(Project::getId).collect(Collectors.toSet());
     }
 
-    abstract User userDetailsToUser(UserDetails userDetails);
-
-    abstract UserDetails userToUserDetails(User user);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract User updateUserFromUserDetails(UserDetails userDetails, @MappingTarget User user);
 }
