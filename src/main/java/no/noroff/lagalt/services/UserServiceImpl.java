@@ -119,18 +119,17 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /**
-     * Changes the description of the current user
+    /** Changes the description of the current user
      *
      * @param description An array of strings where only 0 is used
-     * @param id          Refers to the id of an user
+     * @param id Refers to the id of an user
      * @author Marius Olafsen
      */
-    public void changeDescription(String description, String id){
+    public void changeDescription(String[] description, String id){
         User user = this.findById(id);
-        user.setDescription(description);
+        user.setDescription(description[0]);
         userRepository.save(user);
-      }
+    }
 
     /** Changes from hidden to "not hidden" if the user
      * is already hidden, and from "not hidden" to hidden if
