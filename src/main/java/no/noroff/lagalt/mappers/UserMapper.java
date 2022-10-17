@@ -1,13 +1,12 @@
 package no.noroff.lagalt.mappers;
 
+import no.noroff.lagalt.dtos.UserDetails;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.models.UserPutDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
-    @Mapping(target = "projectsParticipated", source = "projectsParticipated",qualifiedByName = "projectsToIds" )
-    @Mapping(target = "projectsHistory", source = "projectsHistory",qualifiedByName = "projectsToIds" )
+    @Mapping(target = "projectsParticipated", source = "projectsParticipated", qualifiedByName = "projectsToIds")
+    @Mapping(target = "projectsHistory", source = "projectsHistory", qualifiedByName = "projectsToIds")
     @Mapping(target = "projectsOwned", source = "projectsOwned", qualifiedByName = "projectsToIds")
     public abstract UserGetDTO userToUserDTO(User user);
 
@@ -40,10 +39,16 @@ public abstract class UserMapper {
 
     @Named("projectsToIds")
     Set<Integer> mapToInteger(Set<Project> projects) {
-        if(projects == null)
+        if (projects == null)
             return null;
         return projects.stream()
                 .map(Project::getId).collect(Collectors.toSet());
     }
 
+    abstract User userDetailsToUser(UserDetails userDetails);
+
+    abstract UserDetails userToUserDetails(User user);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    abstract User updateUserFromUserDetails(UserDetails userDetails, @MappingTarget User user);
 }

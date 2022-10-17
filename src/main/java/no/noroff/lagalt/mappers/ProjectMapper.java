@@ -1,5 +1,6 @@
 package no.noroff.lagalt.mappers;
 
+import no.noroff.lagalt.dtos.ProjectDetails;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.dtos.ProjectPutDTO;
@@ -80,4 +81,11 @@ public abstract class ProjectMapper {
     public abstract Project projectPutDTOToProject(ProjectPutDTO projectPutDTO);
 
     public abstract ProjectPutDTO projectToProjectPutDTO(Project project);
+
+    abstract Project projectDetailsToProject(ProjectDetails projectDetails);
+
+    abstract ProjectDetails projectToProjectDetails(Project project);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    abstract Project updateProjectFromProjectDetails(ProjectDetails projectDetails, @MappingTarget Project project);
 }

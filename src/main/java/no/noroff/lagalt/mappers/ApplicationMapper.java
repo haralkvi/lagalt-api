@@ -1,5 +1,6 @@
 package no.noroff.lagalt.mappers;
 
+import no.noroff.lagalt.dtos.ApplicationDetails;
 import no.noroff.lagalt.dtos.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.ApplicationPostDTO;
 import no.noroff.lagalt.models.Application;
@@ -8,9 +9,7 @@ import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
 import no.noroff.lagalt.services.UserServiceImpl;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -29,8 +28,8 @@ public abstract class ApplicationMapper {
     @Mapping(target = "project", source = "project.id")
     public abstract ApplicationGetDTO applicationToApplicationDTO(Application application);
 
-    @Mapping(target = "user", source = "user", qualifiedByName = "idToUser" )
-    @Mapping(target = "project", source = "project", qualifiedByName= "idToProject")
+    @Mapping(target = "user", source = "user", qualifiedByName = "idToUser")
+    @Mapping(target = "project", source = "project", qualifiedByName = "idToProject")
     public abstract Application applicationPostDTOtoApplication(ApplicationPostDTO applicationPostDTO);
 
     public Collection<ApplicationGetDTO> applicationToApplicationDTO(Collection<Application> applications) {
@@ -45,13 +44,19 @@ public abstract class ApplicationMapper {
     }
 
     @Named("idToUser")
-    User mapToUser(String id){
+    User mapToUser(String id) {
         return userService.findById(id);
     }
 
     @Named("idToProject")
-    Project mapToProject(int id){
+    Project mapToProject(int id) {
         return projectService.findById(id);
     }
 
+    abstract Application applicationDetailsToApplication(ApplicationDetails applicationDetails);
+
+    abstract ApplicationDetails applicationToApplicationDetails(Application application);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    abstract Application updateApplicationFromApplicationDetails(ApplicationDetails applicationDetails, @MappingTarget Application application);
 }

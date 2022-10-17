@@ -1,18 +1,13 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ApplicationGetDTO;
-import no.noroff.lagalt.dtos.ApplicationPostDTO;
-import no.noroff.lagalt.dtos.CommentGetDTO;
-import no.noroff.lagalt.dtos.CommentPostDTO;
+import no.noroff.lagalt.dtos.*;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -31,8 +26,8 @@ public abstract class CommentMapper {
     @Mapping(target = "project", source = "project.id")
     public abstract CommentGetDTO commentToCommentDTO(Comment comment);
 
-    @Mapping(target = "user", source = "user", qualifiedByName = "idToUser" )
-    @Mapping(target = "project", source = "project", qualifiedByName= "idToProject")
+    @Mapping(target = "user", source = "user", qualifiedByName = "idToUser")
+    @Mapping(target = "project", source = "project", qualifiedByName = "idToProject")
     public abstract Comment commentPostDTOtoComment(CommentPostDTO commentPostDTO);
 
     public Collection<CommentGetDTO> commentToCommentDTO(Collection<Comment> comments) {
@@ -47,14 +42,20 @@ public abstract class CommentMapper {
     }
 
     @Named("idToProject")
-    Project mapToProject(int id){
+    Project mapToProject(int id) {
         return projectService.findById(id);
     }
 
     @Named("idToUser")
-    User mapToUser(String id){
+    User mapToUser(String id) {
         return userService.findById(id);
     }
 
 
+    abstract Comment commentDetailsToComment(CommentDetails commentDetails);
+
+    abstract CommentDetails commentToCommentDetails(Comment comment);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    abstract Comment updateCommentFromCommentDetails(CommentDetails commentDetails, @MappingTarget Comment comment);
 }
