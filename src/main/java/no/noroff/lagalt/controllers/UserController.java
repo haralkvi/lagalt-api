@@ -135,11 +135,23 @@ public class UserController {
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
+        // user's id has to be unique
+        if (userService.existsById(inputUser.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // user's email has to be unique
+        if (userService.existsByEmail(inputUser.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
-        if(user != null){
+
+        if (user != null) {
             URI location = URI.create("users/" + user.getId());
             return ResponseEntity.created(location).build();
         }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -154,6 +166,16 @@ public class UserController {
     })
     @PostMapping("register")
     public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
+        // user's id has to be unique
+        if (userService.existsById(jwt.getClaimAsString("sub"))) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // user's email has to be unique
+        if (userService.existsByEmail(jwt.getClaimAsString("email"))) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         User user = userService.addById(jwt);
         URI uri = URI.create("api/v1/users/" + user.getId());
         return ResponseEntity.created(uri).build();
