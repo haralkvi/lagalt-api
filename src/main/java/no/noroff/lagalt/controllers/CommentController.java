@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.CommentGetDTO;
 import no.noroff.lagalt.dtos.CommentPostDTO;
+import no.noroff.lagalt.exceptions.CommentNotFoundException;
+import no.noroff.lagalt.exceptions.ProjectNotFoundException;
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.*;
@@ -76,26 +79,16 @@ public class CommentController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user or project IDs do not exist",
                     content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
-        // comment's user has to correspond to user existing in database
-        if (!userService.existsById(inputComment.getUser()) ||
-        // comment's project has to correspond to project existing in database
-        !projectService.existsById(inputComment.getProject())) {
-
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
-
-        if (comment != null) {
-            URI location = URI.create("comments/" + comment.getId());
-            return ResponseEntity.created(location).build();
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        URI location = URI.create("comments/" + comment.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "Deletes a specified comment")
@@ -109,18 +102,28 @@ public class CommentController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
-            return ResponseEntity.badRequest().build();
+        if (!commentService.existsById(id)) {
+            throw new CommentNotFoundException(id);
         }
+
         commentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Updates a comment's text")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Comment successfully created",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing created",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user or project IDs do not exist",
+                    content = @Content)
+    })
     @PutMapping("{id}/text")
     public ResponseEntity editComment(@RequestBody String text, @PathVariable int id) {
-        if (!commentService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         commentService.updateText(text, id);
         return ResponseEntity.noContent().build();
     }
