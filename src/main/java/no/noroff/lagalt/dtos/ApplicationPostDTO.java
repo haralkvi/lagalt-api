@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Data
 public class ApplicationPostDTO {
-    private int user;
+    private String user;
     private int project;
     private String time;
 }
