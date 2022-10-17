@@ -1,5 +1,6 @@
 package no.noroff.lagalt.services;
 
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.UserRepository;
@@ -28,8 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(String id) {
-        Optional<User> opt = userRepository.findById(id);
-        return opt.orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override

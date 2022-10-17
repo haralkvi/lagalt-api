@@ -66,11 +66,7 @@ public class ProjectController {
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         ProjectGetDTO project = projectMapper.projectToProjectDTO(projectService.findById(id));
-        if (project != null){
-            return new ResponseEntity<>(project, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(project);
     }
 
     @Operation(summary = "Creates a project")

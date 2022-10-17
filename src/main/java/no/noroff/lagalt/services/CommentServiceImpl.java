@@ -1,5 +1,6 @@
 package no.noroff.lagalt.services;
 
+import no.noroff.lagalt.exceptions.CommentNotFoundException;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,8 @@ public class CommentServiceImpl implements CommentService{
     CommentRepository commentRepository;
 
     @Override
-    public Comment findById(Integer integer) {
-        Optional<Comment> opt = commentRepository.findById(integer);
-        return opt.orElse(null);
+    public Comment findById(Integer id) {
+        return commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
     }
 
     @Override

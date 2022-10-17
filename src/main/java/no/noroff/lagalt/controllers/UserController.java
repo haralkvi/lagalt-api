@@ -71,11 +71,7 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         UserGetDTO user = userMapper.userToUserDTO(userService.findById(id));
-        if (user != null){
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "Fetches the currently logged in user")

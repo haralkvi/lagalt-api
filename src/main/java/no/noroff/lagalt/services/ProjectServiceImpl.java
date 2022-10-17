@@ -1,5 +1,6 @@
 package no.noroff.lagalt.services;
 
+import no.noroff.lagalt.exceptions.ProjectNotFoundException;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,8 @@ public class ProjectServiceImpl implements ProjectService {
     private CommentService commentService;
 
     @Override
-    public Project findById(Integer integer) {
-        Optional<Project> opt = projectRepository.findById(integer);
-        return opt.orElse(null);
+    public Project findById(Integer id) {
+        return projectRepository.findById(id).orElseThrow(() -> new ProjectNotFoundException(id));
     }
 
     @Override

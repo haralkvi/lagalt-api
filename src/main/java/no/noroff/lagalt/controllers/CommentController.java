@@ -66,11 +66,7 @@ public class CommentController {
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         CommentGetDTO comment = commentMapper.commentToCommentDTO(commentService.findById(id));
-        if (comment != null){
-            return new ResponseEntity<>(comment, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(comment);
     }
 
     @Operation(summary = "Creates a comment")
