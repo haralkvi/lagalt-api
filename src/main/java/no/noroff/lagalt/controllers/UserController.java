@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
+import no.noroff.lagalt.exceptions.EmailAlreadyExistsException;
+import no.noroff.lagalt.exceptions.IdAlreadyExistsException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
@@ -133,12 +135,12 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
         // user's id has to be unique
         if (userService.existsById(inputUser.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new IdAlreadyExistsException(inputUser.getId());
         }
 
         // user's email has to be unique
         if (userService.existsByEmail(inputUser.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new EmailAlreadyExistsException(inputUser.getEmail());
         }
 
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
@@ -164,12 +166,12 @@ public class UserController {
     public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
         // user's id has to be unique
         if (userService.existsById(jwt.getClaimAsString("sub"))) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new IdAlreadyExistsException(jwt.getClaimAsString("sub"));
         }
 
         // user's email has to be unique
         if (userService.existsByEmail(jwt.getClaimAsString("email"))) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new EmailAlreadyExistsException(jwt.getClaimAsString("email"));
         }
 
         User user = userService.addById(jwt);
