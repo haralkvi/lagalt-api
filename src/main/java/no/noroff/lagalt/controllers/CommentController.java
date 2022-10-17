@@ -8,7 +8,7 @@ import no.noroff.lagalt.dtos.CommentGetDTO;
 import no.noroff.lagalt.dtos.CommentPostDTO;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
-import no.noroff.lagalt.services.CommentService;
+import no.noroff.lagalt.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +27,12 @@ public class CommentController {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ProjectService projectService;
 
 
     @Operation(summary = "Gets all comments")
@@ -78,11 +84,21 @@ public class CommentController {
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
+        // comment's user has to correspond to user existing in database
+        if (!userService.existsById(inputComment.getUser()) ||
+        // comment's project has to correspond to project existing in database
+        !projectService.existsById(inputComment.getProject())) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
-        if(comment != null){
+
+        if (comment != null) {
             URI location = URI.create("comments/" + comment.getId());
             return ResponseEntity.created(location).build();
         }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
