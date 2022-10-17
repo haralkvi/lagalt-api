@@ -186,6 +186,9 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "User not found with supplied ID",
                     content = @Content)
     })
     @PutMapping("{id}")

@@ -51,21 +51,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        if (projectRepository.existsById(id)) {
-            Project project = this.findById(id);
+        Project project = this.findById(id);
 
-            // Users who have owned, been member of or viewed a project are not deleted when project is deleted
-            project.getOwner().getProjectsOwned().remove(project);
-            project.getMembers().forEach(member -> member.getProjectsParticipated().remove(project));
-            project.getUserViews().forEach(viewer -> viewer.getProjectsHistory().remove(project));
+        // Users who have owned, been member of or viewed a project are not deleted when project is deleted
+        project.getOwner().getProjectsOwned().remove(project);
+        project.getMembers().forEach(member -> member.getProjectsParticipated().remove(project));
+        project.getUserViews().forEach(viewer -> viewer.getProjectsHistory().remove(project));
 
-            // Applications and comments belonging to a project are deleted when project is deleted
-            project.getApplications().forEach(application -> applicationService.delete(application));
-            project.getComments().forEach(comment -> commentService.delete(comment));
+        // Applications and comments belonging to a project are deleted when project is deleted
+        project.getApplications().forEach(application -> applicationService.delete(application));
+        project.getComments().forEach(comment -> commentService.delete(comment));
 
-            // project can safely be deleted
-            projectRepository.deleteById(id);
-        }
+        // project can safely be deleted
+        projectRepository.deleteById(id);
     }
 
     @Override

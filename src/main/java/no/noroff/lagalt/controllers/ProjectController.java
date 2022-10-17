@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.ProjectGetDTO;
 import no.noroff.lagalt.dtos.ProjectPostDTO;
 import no.noroff.lagalt.dtos.ProjectPutDTO;
+import no.noroff.lagalt.exceptions.ProjectNotFoundException;
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.services.ProjectService;
@@ -40,8 +42,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "200",
                     description = "All projects received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "Projects not found",
                     content = @Content)
     })
     @GetMapping
@@ -76,22 +78,16 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "No such user ID",
                     content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
-        if (!userService.existsById(projectInput.getOwner())) {
-            return ResponseEntity.notFound().build();
-        }
-
         Project project = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
-
-        if (project != null) {
-            URI location = URI.create("projects/" + project.getId());
-            return ResponseEntity.created(location).build();
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        URI location = URI.create("projects/" + project.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "Updates a specified project")
@@ -101,6 +97,9 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project not found with supplied ID",
                     content = @Content)
     })
     @PutMapping("{id}")
@@ -123,14 +122,11 @@ public class ProjectController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (!projectService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
         projectService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Deprecated
     @PutMapping("{projectId}/add-member")
     public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
         String uId = jwt.getClaimAsString("sub");
@@ -143,12 +139,20 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}/members")
+    @Operation(summary = "Add a user as a member to a project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User has been added as member of project",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The project or user with provided IDs do not exist",
+                    content = @Content)
+    })    @PutMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
         for (String uId : members) {
             if (!userService.existsById(uId)) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                throw new UserNotFoundException(uId);
             }
         }
 
