@@ -178,10 +178,10 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @Operation(summary = "Adds skills to a certain users skillset")
+    @Operation(summary = "Updates a given user's set of skills")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "The skills has been added to the users skillset",
+                    description = "The skill set has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing changed",
@@ -225,11 +225,11 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}/description")
-    public ResponseEntity<?> changeDescription(@RequestBody String description, @PathVariable String id){
+    public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
+        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
     @Operation(summary = "Updates currently logged in user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",

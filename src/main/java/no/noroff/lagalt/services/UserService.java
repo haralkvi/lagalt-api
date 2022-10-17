@@ -16,7 +16,7 @@ public interface UserService extends CrudService<User, String> {
 
     void addToClickHistory(int projectId, String userId);
 
-    void changeDescription(String description, String integer);
+    void changeDescription(String[] description, String integer);
 
     void changeHiddenStatus(String uid);
 
