@@ -18,6 +18,7 @@ public abstract class UserMapper {
     @Mapping(target = "projectsParticipated", source = "projectsParticipated",qualifiedByName = "projectsToIds" )
     @Mapping(target = "projectsHistory", source = "projectsHistory",qualifiedByName = "projectsToIds" )
     @Mapping(target = "projectsOwned", source = "projectsOwned", qualifiedByName = "projectsToIds")
+    @Mapping(target = "projectsAppliedTo", source = "projectsAppliedTo", qualifiedByName = "projectsToIds")
     public abstract UserGetDTO userToUserDTO(User user);
 
     @Mapping(target = "hidden", constant = "false")

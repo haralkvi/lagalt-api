@@ -230,6 +230,28 @@ public class UserController {
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Operation(summary = "Update list of projects a given user is applying to")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "The user description has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Malformed body, nothing changed",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "User not found",
+                    content = @Content)
+    })
+    @PutMapping("{id}/applications")
+    public ResponseEntity<?> updateApplications(@RequestBody int[] projects, @PathVariable String id) {
+        if (projects.length != 1) {
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        userService.updateApplications(projects, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Operation(summary = "Updates currently logged in user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",

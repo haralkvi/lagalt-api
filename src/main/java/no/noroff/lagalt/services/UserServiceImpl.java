@@ -167,6 +167,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateApplications(int[] projects, String id) {
+        User user = this.findById(id);
+        for (int projectId :
+                projects) {
+            Project project = projectService.findById(projectId);
+            user.getProjectsAppliedTo().add(project);
+        }
+        userRepository.save(user);
+    }
+
+    @Override
     public boolean existsById(String id) {
         return userRepository.existsById(id);
     }
