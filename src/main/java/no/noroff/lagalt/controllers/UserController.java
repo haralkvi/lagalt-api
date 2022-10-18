@@ -314,7 +314,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("hidden")
+    @PatchMapping("hidden")
     public ResponseEntity<?> toggleHiddenStatus(@AuthenticationPrincipal Jwt jwt){
         String uid = jwt.getClaimAsString("sub");
 
