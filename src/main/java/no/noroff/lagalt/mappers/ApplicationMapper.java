@@ -1,6 +1,8 @@
 package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.details.ApplicationDetails;
+import no.noroff.lagalt.dtos.details.ProjectDetails;
+import no.noroff.lagalt.dtos.details.UserDetails;
 import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
 import no.noroff.lagalt.models.Application;
@@ -23,8 +25,14 @@ public abstract class ApplicationMapper {
     @Autowired
     ProjectService projectService;
 
-    @Mapping(target = "user", source = "user.id")
-    @Mapping(target = "project", source = "project.id")
+    @Autowired
+    private UserDetailsMapper userDetailsMapper;
+
+    @Autowired
+    private ProjectDetailsMapper projectDetailsMapper;
+
+    @Mapping(target = "user", source = "user", qualifiedByName = "userToUserDetails")
+    @Mapping(target = "project", source = "project", qualifiedByName = "projectToProjectDetails")
     public abstract ApplicationGetDTO applicationToApplicationDTO(Application application);
 
     @Mapping(target = "user", source = "user", qualifiedByName = "idToUser")
@@ -40,6 +48,16 @@ public abstract class ApplicationMapper {
             list.add(applicationToApplicationDTO(application));
         }
         return list;
+    }
+
+    @Named("userToUserDetails")
+    UserDetails mapUserToDetails(User user) {
+        return userDetailsMapper.userToUserDetails(user);
+    }
+
+    @Named("projectToProjectDetails")
+    ProjectDetails mapProjectToDetails(Project project) {
+        return projectDetailsMapper.projectToProjectDetails(project);
     }
 
     @Named("idToUser")
