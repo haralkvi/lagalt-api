@@ -165,4 +165,22 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Update project's list of tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Project's tags list has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project not found",
+                    content = @Content)
+    })
+    @PutMapping("{id}/tags")
+    public ResponseEntity<?> addTags(@RequestBody String[] tags, @PathVariable int id) {
+        projectService.addTags(tags, id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
