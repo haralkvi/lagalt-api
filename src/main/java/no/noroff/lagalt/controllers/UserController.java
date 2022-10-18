@@ -48,8 +48,8 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "All users received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "No users found",
                     content = @Content)
     })
     @GetMapping
@@ -103,6 +103,9 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "Recommended projects have successfully been fetched",
                     content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "Specified user not found",
                     content = @Content)
@@ -120,7 +123,6 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @Operation(summary = "Creates a user")
@@ -202,7 +204,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
     @Operation(summary = "Updates a given user's set of skills")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -210,6 +211,9 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing changed",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user ID does not exist",
                     content = @Content)
     })
     @PutMapping("{id}/skillset")
@@ -229,6 +233,9 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing has been added",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided project ID does not exist",
                     content = @Content)
     })
     @PutMapping("{id}/click-history")
@@ -247,6 +254,9 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing changed",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user ID does not exist",
                     content = @Content)
     })
     @PutMapping("{id}/description")
@@ -255,6 +265,7 @@ public class UserController {
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @Operation(summary = "Updates currently logged in user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -262,6 +273,9 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "User not found",
                     content = @Content)
     })
     @PutMapping("update")
@@ -316,6 +330,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Toggle logged in user's hidden status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User's hidden status has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The specified user does not exist",
+                    content = @Content)
+    })
     @PutMapping("hidden")
     public ResponseEntity<?> toggleHiddenStatus(@AuthenticationPrincipal Jwt jwt){
         String uid = jwt.getClaimAsString("sub");
@@ -327,5 +350,4 @@ public class UserController {
         userService.changeHiddenStatus(uid);
         return ResponseEntity.noContent().build();
     }
-
 }
