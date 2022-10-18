@@ -45,8 +45,8 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "All users received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "Element not found. Nothing changed",
                     content = @Content)
     })
     @GetMapping
