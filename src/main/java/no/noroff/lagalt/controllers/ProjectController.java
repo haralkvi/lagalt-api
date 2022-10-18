@@ -179,6 +179,10 @@ public class ProjectController {
     })
     @PutMapping("{id}/tags")
     public ResponseEntity<?> addTags(@RequestBody String[] tags, @PathVariable int id) {
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
         projectService.addTags(tags, id);
         return ResponseEntity.noContent().build();
     }
