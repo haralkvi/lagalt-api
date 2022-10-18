@@ -211,6 +211,7 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}/skillset")
+
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
         if (!userService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -227,14 +228,17 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing has been added",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The project ID was not found",
                     content = @Content)
     })
+
     @PutMapping("{id}/click-history")
     public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
-        if (!projectService.existsById(projectId)) {
-            return ResponseEntity.notFound().build();
-        }
-        userService.addToClickHistory(projectId, id);
+        if(!(userService.addToClickHistory(projectId, id))){
+          return ResponseEntity.notFound().build();
+        };
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -325,5 +329,4 @@ public class UserController {
         userService.changeHiddenStatus(uid);
         return ResponseEntity.noContent().build();
     }
-
 }

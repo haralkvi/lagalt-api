@@ -34,6 +34,9 @@ public class ProjectController {
     private ProjectService projectService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ProjectMapper projectMapper;
 
     @Autowired
@@ -139,6 +142,7 @@ public class ProjectController {
         projectService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
 
     @PutMapping("{projectId}/add-member")
     public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
