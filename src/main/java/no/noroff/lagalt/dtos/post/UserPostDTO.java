@@ -1,4 +1,4 @@
-package no.noroff.lagalt.dtos;
+package no.noroff.lagalt.dtos.post;
 
 import lombok.Data;
 

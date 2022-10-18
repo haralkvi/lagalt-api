@@ -1,4 +1,4 @@
-package no.noroff.lagalt.dtos;
+package no.noroff.lagalt.dtos.put;
 
 import lombok.Data;
 import no.noroff.lagalt.models.ProjectCategory;

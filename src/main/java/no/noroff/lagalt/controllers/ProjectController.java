@@ -4,11 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.noroff.lagalt.dtos.ProjectGetDTO;
-import no.noroff.lagalt.dtos.ProjectPostDTO;
-import no.noroff.lagalt.dtos.ProjectPutDTO;
+import no.noroff.lagalt.dtos.get.ProjectGetDTO;
+import no.noroff.lagalt.dtos.post.ProjectPostDTO;
+import no.noroff.lagalt.dtos.put.ProjectPutDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
+import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -89,6 +93,7 @@ public class ProjectController {
         }
 
         Project project = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
+        userService.addMembers(new String[]{project.getOwner().getId()}, project.getId());
 
         if (project != null) {
             URI location = URI.create("projects/" + project.getId());
