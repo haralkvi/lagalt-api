@@ -1,6 +1,7 @@
 package no.noroff.lagalt.dtos.get;
 
 import lombok.Data;
+import no.noroff.lagalt.dtos.details.ProjectDetails;
 
 import java.util.Set;
 
@@ -12,9 +13,9 @@ public class UserGetDTO {
     private String email;
     private String description;
     private Set<String> skillSet;
-    private Set<Integer> projectsOwned;
-    private Set<Integer> projectsHistory;
-    private Set<Integer> projectsParticipated;
+    private Set<ProjectDetails> projectsOwned;
+    private Set<ProjectDetails> projectsHistory;
+    private Set<ProjectDetails> projectsParticipated;
     private boolean hidden;
     private boolean admin;
 
