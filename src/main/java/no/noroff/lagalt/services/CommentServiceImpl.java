@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService{
@@ -15,7 +16,8 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public Comment findById(Integer integer) {
-        return commentRepository.findById(integer).get();
+        Optional<Comment> opt = commentRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override
@@ -41,5 +43,15 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public void delete(Comment entity) {
         commentRepository.delete(entity);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return commentRepository.existsById(id);
+    }
+
+    @Override
+    public void updateText(String text, int id) {
+        commentRepository.updateTextById(text, id);
     }
 }

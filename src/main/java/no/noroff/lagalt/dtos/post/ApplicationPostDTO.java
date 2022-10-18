@@ -1,4 +1,4 @@
-package no.noroff.lagalt.dtos;
+package no.noroff.lagalt.dtos.post;
 
 import lombok.Data;
 import lombok.Getter;
@@ -6,8 +6,7 @@ import lombok.Setter;
 
 @Data
 public class ApplicationPostDTO {
-    private int user;
+    private String user;
     private int project;
-    private String status;
     private String time;
 }

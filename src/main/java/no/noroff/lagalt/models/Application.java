@@ -26,9 +26,6 @@ public class Application {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Column(name="application_status")
-    private String status;
-
     @Column(nullable = false)
     @Timestamp
     public String time;

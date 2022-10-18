@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.noroff.lagalt.dtos.ApplicationGetDTO;
-import no.noroff.lagalt.dtos.ApplicationPostDTO;
+import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
+import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
 import no.noroff.lagalt.mappers.*;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;
@@ -119,5 +119,4 @@ public class ApplicationController {
         applicationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-    //TODO: HUSK Å ENDRE DELETE
 }

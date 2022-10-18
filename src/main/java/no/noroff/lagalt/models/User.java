@@ -13,11 +13,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private int id;
-
-    private String uid;
+    @Column(name = "user_id", unique = true, nullable = false, updatable = false)
+    private String id;
 
     @Column(name = "user_name", nullable = false)
     private String name;
@@ -50,9 +47,6 @@ public class User {
     )
     private Set<Project> projectsHistory;
 
-    @Column(nullable = false)
-    private boolean admin;
-
     private boolean hidden;
 
     @OneToMany(mappedBy = "user")
@@ -60,12 +54,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getUid() {
-        return uid;
-    }
 }

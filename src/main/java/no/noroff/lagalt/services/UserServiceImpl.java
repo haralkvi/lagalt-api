@@ -9,10 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,8 +27,9 @@ public class UserServiceImpl implements UserService {
     private ApplicationService applicationService;
 
     @Override
-    public User findById(Integer integer) {
-        return userRepository.findById(integer).get();
+    public User findById(String id) {
+        Optional<User> opt = userRepository.findById(id);
+        return opt.orElse(null);
     }
 
     @Override
@@ -45,13 +43,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User entity) {
-        return userRepository.save(entity);
+    public User update(User updatedUser) {
+        User user = this.findById(updatedUser.getId());
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+        return userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         if (userRepository.existsById(id)) {
             User user = this.findById(id);
 
@@ -74,51 +75,119 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteByUid(String uid) {
-        userRepository.deleteByUid(uid);
-    }
-
-    @Override
     public Collection<Project> findRecommendations(User user) {
         return recommendationUtil.getRecommendedProjects(user);
     }
 
-    @Override
-    public User addByUid(Jwt jwt) {
+    public User addById(Jwt jwt) {
         User user = new User();
-        user.setUid(jwt.getClaimAsString("sub"));
-        user.setName(jwt.getClaimAsString("username"));
+        user.setId(jwt.getClaimAsString("sub"));
+        user.setName(jwt.getClaimAsString("name"));
         user.setEmail(jwt.getClaimAsString("email"));
-        user.setAdmin(jwt.getClaimAsBoolean("admin"));
-        user.setHidden(jwt.getClaimAsBoolean("hidden"));
+        user.setHidden(false);
+        userRepository.save(user);
         return user;
     }
 
-    @Override
-    public User findByUid(String uid) {
-        return userRepository.findByUid(uid);
-       }
-       
-    public void addSkillset(String[] skillsetPostDTO, Integer id){
+    /** Updates a given user's skill set
+     *
+     * @param skills An array of Strings, these contain skills
+     * @param id String that refers to an specific user
+     */
+    public void updateSkillset(String[] skills, String id){
         User user = this.findById(id);
-        user.setSkillSet(new HashSet<>(Arrays.asList(skillsetPostDTO)));
-        userRepository.save(user);
-    }
-    
-    public void addToClickHistory(Integer[] projectId, Integer id){
-        User user = this.findById(id);
-        Set<Project> projects = user.getProjectsHistory();
-        for(Integer s : projectId){
-            Project project = projectService.findById(s);
-            projects.add(project);
-        }
-        user.setProjectsHistory(projects);
+        user.setSkillSet(new HashSet<>(Arrays.asList(skills)));
         userRepository.save(user);
     }
 
-    public void changeDescription(String[] description, Integer id){
-        User user = userRepository.findById(id).get();
+    /** Adds a project or multiple projects to a specified users click history
+     *
+     * @param projectId An array of integers that refers to projects' ids
+     * @param id Integer that refers to an users id
+     * @author Marius Olafsen
+     */
+
+    public boolean addToClickHistory(int projectId, String id){
+        // find user and user's set of clicked projects
+        User user = this.findById(id);
+        if (user == null) {
+            return false;
+        }
+
+        Set<Project> projects = user.getProjectsHistory();
+
+        // find project to be added to user's click history
+           Project project = projectService.findById(projectId);
+            if(project==null)return false;
+
+        // add project to user's click history
+        projects.add(project);
+
+        // persist changes
+        user.setProjectsHistory(projects);
+        userRepository.save(user);
+        return true;
+    }
+
+    /** Changes the description of the current user
+     *
+     * @param description An array of strings where only 0 is used
+     * @param id Refers to the id of an user
+     * @author Marius Olafsen
+     */
+    public void changeDescription(String[] description, String id){
+        User user = this.findById(id);
         user.setDescription(description[0]);
         userRepository.save(user);
-      }
+    }
+
+    /** Changes from hidden to "not hidden" if the user
+     * is already hidden, and from "not hidden" to hidden if
+     * otherwise.
+     *
+     * @param uid refers to currently logged in user
+     * @author Marius Olafsen
+     */
+    public void changeHiddenStatus(String uid){
+        User user = this.findById(uid);
+        user.setHidden(!user.isHidden());
+        userRepository.save(user);
+    }
+
+    /** Adds the current logged in user as an
+     * member to a specified project
+     *
+     * @param uId currently logged in user, comes from JWT
+     * @param id refers to an project
+     * @author Marius Olafsen
+     */
+    @Transactional
+    public void addMember(String uId, int id){
+        Project project = projectService.findById(id);
+        User user = this.findById(uId);
+        user.getProjectsParticipated().add(project);
+        userRepository.save(user);
+    }
+
+    /** Adds member(s) to a specified project
+     *
+     * @param members arr of String that refers to users
+     * @param id refers to a project
+     * @author Marius Olafsen
+     */
+    public void addMembers(String[] members, int id) {
+        for (String member : members){
+            this.addMember(member, id);
+        }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        return userRepository.existsById(id);
+    }
 }

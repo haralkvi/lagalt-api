@@ -1,7 +1,5 @@
 package no.noroff.lagalt.services;
 
-import no.noroff.lagalt.models.Application;
-import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.ProjectRepository;
@@ -9,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -23,11 +22,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private CommentService commentService;
 
-    //javadocs
-
     @Override
     public Project findById(Integer integer) {
-        return projectRepository.findById(integer).get();
+        Optional<Project> opt = projectRepository.findById(integer);
+        return opt.orElse(null);
     }
 
     @Override
@@ -41,8 +39,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project update(Project entity) {
-        return projectRepository.save(entity);
+    public Project update(Project updatedProject) {
+        Project project = this.findById(updatedProject.getId());
+        project.setName(updatedProject.getName());
+        project.setCategory(updatedProject.getCategory());
+        project.setStatus(updatedProject.getStatus());
+        project.setSummary(updatedProject.getSummary());
+        project.setLink(updatedProject.getLink());
+        return projectRepository.save(project);
     }
 
     @Override
@@ -68,5 +72,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void delete(Project entity) {
         projectRepository.delete(entity);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return projectRepository.existsById(id);
+    }
+
+    @Override
+    public void addTags(String[] tags, int id) {
+        Project project = this.findById(id);
+        project.setTags(Arrays.stream(tags).collect(Collectors.toSet()));
+        projectRepository.save(project);
     }
 }
