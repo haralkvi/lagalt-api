@@ -6,6 +6,7 @@ import no.noroff.lagalt.dtos.UserGetDTO;
 import no.noroff.lagalt.dtos.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
+import no.noroff.lagalt.models.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 
 import org.junit.Before;
@@ -49,6 +50,7 @@ public class UserControllerTest {
     boolean hidden;
 
     User user = new User();
+
 
     @Before
     public void init(){
@@ -192,6 +194,17 @@ public class UserControllerTest {
     //update
     @Test
     public void testUpdate(){
+        //arrange
+        UserPutDTO userPutDTO = new UserPutDTO(id,name,email);
+
+        when(userMapper.userPutDTOtoUser(userPutDTO)).thenReturn(user);
+        when(userService.update(user)).thenReturn(user);
+
+        //act
+        ResponseEntity<?> result = userController.update(userPutDTO,id);
+
+        //assert
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
     }
 
@@ -199,6 +212,15 @@ public class UserControllerTest {
     @Test
     public void testUpdateError(){
 
+        UserPutDTO userPutDTO = new UserPutDTO("0",null,null);
+
+        when(userMapper.userPutDTOtoUser(userPutDTO)).thenReturn(user);
+
+        //act
+        ResponseEntity<?> result = userController.update(userPutDTO, id);
+
+        //assert
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
     }
 
