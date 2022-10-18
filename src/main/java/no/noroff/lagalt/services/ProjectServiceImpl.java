@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -37,7 +35,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project add(Project entity) {
-        // project owner is ex officio a member
         return projectRepository.save(entity);
     }
 
@@ -82,4 +79,10 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsById(id);
     }
 
+    @Override
+    public void addTags(String[] tags, int id) {
+        Project project = this.findById(id);
+        project.setTags(Arrays.stream(tags).collect(Collectors.toSet()));
+        projectRepository.save(project);
+    }
 }
