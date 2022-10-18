@@ -32,8 +32,8 @@ public class ApplicationController {
             @ApiResponse(responseCode = "200",
                     description = "All applications received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "No applications found",
                     content = @Content)
     })
     @GetMapping
@@ -72,6 +72,9 @@ public class ApplicationController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user or project not found",
                     content = @Content)
     })
     @PostMapping
@@ -90,6 +93,9 @@ public class ApplicationController {
                     description = "The application has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing received",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
                     description = "Malformed body, nothing received",
                     content = @Content)
     })
