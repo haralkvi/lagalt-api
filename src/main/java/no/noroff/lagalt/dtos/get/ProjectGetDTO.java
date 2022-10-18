@@ -1,6 +1,8 @@
 package no.noroff.lagalt.dtos.get;
 
 import lombok.Data;
+import no.noroff.lagalt.dtos.details.ApplicationDetails;
+import no.noroff.lagalt.dtos.details.CommentDetails;
 import no.noroff.lagalt.dtos.details.UserDetails;
 
 import java.util.Collection;
@@ -18,9 +20,9 @@ public class ProjectGetDTO {
     private String status;
     private Collection<String> tags;
     private String summary;
-    private Set<Integer> comments;
+    private Set<CommentDetails> comments;
     private String image;
     private String link;
-    private Set<Integer> applications;
+    private Set<ApplicationDetails> applications;
 
 }
