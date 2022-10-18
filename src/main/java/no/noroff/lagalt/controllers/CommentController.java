@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.CommentGetDTO;
 import no.noroff.lagalt.dtos.CommentPostDTO;
 import no.noroff.lagalt.exceptions.CommentNotFoundException;
-import no.noroff.lagalt.exceptions.ProjectNotFoundException;
-import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.*;
@@ -43,8 +41,8 @@ public class CommentController {
             @ApiResponse(responseCode = "200",
                     description = "All comments received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "No comments found",
                     content = @Content)
     })
     @GetMapping
