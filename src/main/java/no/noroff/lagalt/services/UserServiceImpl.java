@@ -159,6 +159,7 @@ public class UserServiceImpl implements UserService {
         Project project = projectService.findById(id);
         User user = this.findById(uId);
         user.getProjectsParticipated().add(project);
+        System.out.println(user.getName());
         userRepository.save(user);
     }
 
