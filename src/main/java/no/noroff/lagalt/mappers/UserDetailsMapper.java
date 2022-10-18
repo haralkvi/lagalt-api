@@ -1,12 +1,11 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.UserDetails;
+import no.noroff.lagalt.dtos.details.UserDetails;
 import no.noroff.lagalt.models.User;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
+
+@Mapper(componentModel = "spring")
 public abstract class UserDetailsMapper {
 
     abstract User userDetailsToUser(UserDetails userDetails);

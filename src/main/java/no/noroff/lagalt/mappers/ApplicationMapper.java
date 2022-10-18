@@ -1,14 +1,13 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ApplicationDetails;
-import no.noroff.lagalt.dtos.ApplicationGetDTO;
-import no.noroff.lagalt.dtos.ApplicationPostDTO;
+import no.noroff.lagalt.dtos.details.ApplicationDetails;
+import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
+import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
-import no.noroff.lagalt.services.UserServiceImpl;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

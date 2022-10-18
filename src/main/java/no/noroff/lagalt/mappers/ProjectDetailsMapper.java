@@ -1,13 +1,15 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ProjectDetails;
+import no.noroff.lagalt.dtos.details.ProjectDetails;
 import no.noroff.lagalt.models.Project;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 
+@Mapper(componentModel = "spring")
 public abstract class ProjectDetailsMapper {
 
-    abstract Project projectDetailsToProject(ProjectDetails projectDetails);
+    public abstract Project projectDetailsToProject(ProjectDetails projectDetails);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
@@ -15,5 +17,5 @@ public abstract class ProjectDetailsMapper {
     @Mapping(target = "tags", source = "tags")
     @Mapping(target = "summary", source = "summary")
     @Mapping(target = "link", source = "link")
-    abstract ProjectDetails projectToProjectDetails(Project project);
+    public abstract ProjectDetails projectToProjectDetails(Project project);
 }

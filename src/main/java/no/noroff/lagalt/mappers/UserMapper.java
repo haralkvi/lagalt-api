@@ -1,8 +1,7 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.UserDetails;
-import no.noroff.lagalt.dtos.UserGetDTO;
-import no.noroff.lagalt.dtos.UserPostDTO;
+import no.noroff.lagalt.dtos.get.UserGetDTO;
+import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.models.UserPutDTO;

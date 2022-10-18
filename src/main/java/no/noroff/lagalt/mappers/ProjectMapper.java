@@ -1,8 +1,9 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.ProjectGetDTO;
-import no.noroff.lagalt.dtos.ProjectPostDTO;
-import no.noroff.lagalt.dtos.ProjectPutDTO;
+import no.noroff.lagalt.dtos.get.ProjectGetDTO;
+import no.noroff.lagalt.dtos.post.ProjectPostDTO;
+import no.noroff.lagalt.dtos.put.ProjectPutDTO;
+import no.noroff.lagalt.dtos.details.UserDetails;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
@@ -22,9 +23,12 @@ public abstract class ProjectMapper {
     @Autowired
     UserService userService;
 
-    @Mapping(target = "owner", source = "owner.id")
+    @Autowired
+    UserDetailsMapper userDetailsMapper;
+
+    @Mapping(target = "owner", source = "owner", qualifiedByName = "userToUserDetails")
     @Mapping(target = "members", source = "members", qualifiedByName = "usersToUserDetails")
-    @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToIds")
+    @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToUserDetails")
     @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToIds")
     @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
@@ -41,6 +45,19 @@ public abstract class ProjectMapper {
             list.add(projectToProjectDTO(project));
         }
         return list;
+    }
+
+    @Named("userToUserDetails")
+    UserDetails mapUserToDetails(User user) {
+        return userDetailsMapper.userToUserDetails(user);
+    }
+
+    @Named("usersToUserDetails")
+    Set<UserDetails> mapUsersToDetails(Set<User> users) {
+        if (users == null)
+            return null;
+        return users.stream()
+                .map(this::mapUserToDetails).collect(Collectors.toSet());
     }
 
     @Named("usersToIds")

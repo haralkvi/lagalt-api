@@ -1,7 +1,8 @@
 package no.noroff.lagalt.mappers;
 
-import no.noroff.lagalt.dtos.*;
-import no.noroff.lagalt.models.Application;
+import no.noroff.lagalt.dtos.details.CommentDetails;
+import no.noroff.lagalt.dtos.get.CommentGetDTO;
+import no.noroff.lagalt.dtos.post.CommentPostDTO;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
