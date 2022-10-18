@@ -171,7 +171,7 @@ public class ProjectController {
                     description = "Project's tags list has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+                    description = "Malformed body",
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "Project not found",
@@ -182,5 +182,4 @@ public class ProjectController {
         projectService.addTags(tags, id);
         return ResponseEntity.noContent().build();
     }
-
 }
