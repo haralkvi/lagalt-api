@@ -39,8 +39,6 @@ public class ProjectController {
     @Autowired
     private ProjectMapper projectMapper;
 
-    @Autowired
-    private UserService userService;
 
     @Operation(summary = "Gets all projects")
     @ApiResponses(value = {

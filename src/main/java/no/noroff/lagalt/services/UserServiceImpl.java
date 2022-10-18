@@ -110,10 +110,14 @@ public class UserServiceImpl implements UserService {
     public boolean addToClickHistory(int projectId, String id){
         // find user and user's set of clicked projects
         User user = this.findById(id);
+        if (user == null) {
+            return false;
+        }
+
         Set<Project> projects = user.getProjectsHistory();
 
         // find project to be added to user's click history
-           Project project = projectService.findById(projectId[0]);
+           Project project = projectService.findById(projectId);
             if(project==null)return false;
 
         // add project to user's click history
