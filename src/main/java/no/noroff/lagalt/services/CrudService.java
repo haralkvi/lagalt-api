@@ -16,5 +16,6 @@ import java.util.Collection;
 
         void delete(T entity);
 
-}
+        boolean existsById(ID id);
+    }
 

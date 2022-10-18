@@ -44,4 +44,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void delete(Application entity) {
         applicationRepository.delete(entity);
     }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return applicationRepository.existsById(id);
+    }
 }

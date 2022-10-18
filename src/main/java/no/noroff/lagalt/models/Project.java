@@ -31,21 +31,22 @@ public class Project {
     @ManyToMany(mappedBy = "projectsHistory")
     private Set<User> userViews;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="project_category")
-    private String category;
+    private ProjectCategory category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="project_status")
+    private ProjectStatus status;
 
     @ElementCollection
-    @Column(name="tags")
-    private Collection<String> tags;
+    private Set<String> tags;
 
     @Column(name="summary")
     private String summary;
 
     @OneToMany(mappedBy = "project")
     private Set<Comment> comments;
-
-    @Column(name="project_image")
-    private String image;
 
     @Column(name="project_link")
     private String link;
