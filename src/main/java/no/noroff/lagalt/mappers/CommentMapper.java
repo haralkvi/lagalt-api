@@ -1,6 +1,8 @@
 package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.details.CommentDetails;
+import no.noroff.lagalt.dtos.details.ProjectDetails;
+import no.noroff.lagalt.dtos.details.UserDetails;
 import no.noroff.lagalt.dtos.get.CommentGetDTO;
 import no.noroff.lagalt.dtos.post.CommentPostDTO;
 import no.noroff.lagalt.models.Comment;
@@ -23,8 +25,14 @@ public abstract class CommentMapper {
     @Autowired
     UserService userService;
 
-    @Mapping(target = "user", source = "user.id")
-    @Mapping(target = "project", source = "project.id")
+    @Autowired
+    ProjectDetailsMapper projectDetailsMapper;
+
+    @Autowired
+    UserDetailsMapper userDetailsMapper;
+
+    @Mapping(target = "user", source = "user", qualifiedByName = "userToUserDetails")
+    @Mapping(target = "project", source = "project", qualifiedByName = "projectToProjectDetails")
     public abstract CommentGetDTO commentToCommentDTO(Comment comment);
 
     @Mapping(target = "user", source = "user", qualifiedByName = "idToUser")
@@ -40,6 +48,16 @@ public abstract class CommentMapper {
             list.add(commentToCommentDTO(comment));
         }
         return list;
+    }
+
+    @Named("userToUserDetails")
+    UserDetails mapUserToDetails(User user) {
+        return userDetailsMapper.userToUserDetails(user);
+    }
+
+    @Named("projectToProjectDetails")
+    ProjectDetails mapProjectToDetails(Project project) {
+        return projectDetailsMapper.projectToProjectDetails(project);
     }
 
     @Named("idToProject")
