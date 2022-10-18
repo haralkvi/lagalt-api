@@ -92,7 +92,7 @@ public class ProjectController {
 
     @Operation(summary = "Updates a specified project")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "204",
                     description = "The project has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
@@ -126,7 +126,18 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @Deprecated
+    @Operation(summary = "Add currently logged in user as a member to a project", deprecated = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User has been added as member of project",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The project or user with provided IDs do not exist",
+                    content = @Content)
+    })
     @PutMapping("{projectId}/add-member")
     public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
         String uId = jwt.getClaimAsString("sub");
@@ -144,10 +155,14 @@ public class ProjectController {
             @ApiResponse(responseCode = "204",
                     description = "User has been added as member of project",
                     content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The project or user with provided IDs do not exist",
                     content = @Content)
-    })    @PutMapping("{id}/members")
+    })
+    @PutMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
         for (String uId : members) {

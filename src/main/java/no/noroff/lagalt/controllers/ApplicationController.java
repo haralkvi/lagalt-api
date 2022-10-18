@@ -89,7 +89,7 @@ public class ApplicationController {
 
     @Operation(summary = "Updates a specified application")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "204",
                     description = "The application has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
