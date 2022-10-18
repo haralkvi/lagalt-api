@@ -1,5 +1,7 @@
 package no.noroff.lagalt.mappers;
 
+import no.noroff.lagalt.dtos.details.ApplicationDetails;
+import no.noroff.lagalt.dtos.details.CommentDetails;
 import no.noroff.lagalt.dtos.get.ProjectGetDTO;
 import no.noroff.lagalt.dtos.post.ProjectPostDTO;
 import no.noroff.lagalt.dtos.put.ProjectPutDTO;
@@ -27,11 +29,17 @@ public abstract class ProjectMapper {
     @Autowired
     UserDetailsMapper userDetailsMapper;
 
+    @Autowired
+    CommentDetailsMapper commentDetailsMapper;
+
+    @Autowired
+    private ApplicationDetailsMapper applicationDetailsMapper;
+
     @Mapping(target = "owner", source = "owner", qualifiedByName = "userToUserDetails")
     @Mapping(target = "members", source = "members", qualifiedByName = "usersToUserDetails")
     @Mapping(target = "userViews", source = "userViews", qualifiedByName = "usersToUserDetails")
-    @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToIds")
-    @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToIds")
+    @Mapping(target = "comments", source = "comments", qualifiedByName = "commentsToCommentDetails")
+    @Mapping(target = "applications", source = "applications", qualifiedByName = "applicationsToApplicationDetails")
     public abstract ProjectGetDTO projectToProjectDTO(Project project);
 
     @Mapping(target = "owner", source = "owner", qualifiedByName = "idToOwner")
@@ -46,6 +54,22 @@ public abstract class ProjectMapper {
             list.add(projectToProjectDTO(project));
         }
         return list;
+    }
+
+    @Named("commentsToCommentDetails")
+    Set<CommentDetails> mapCommentsToDetails(Set<Comment> comments) {
+        if (comments == null)
+            return null;
+        return comments.stream()
+                .map(commentDetailsMapper::commentToCommentDetails).collect(Collectors.toSet());
+    }
+    
+    @Named("applicationsToApplicationDetails")
+    Set<ApplicationDetails> mapApplicationsToDetails(Set<Application> applications) {
+        if (applications == null)
+            return null;
+        return applications.stream()
+                .map(applicationDetailsMapper::applicationToApplicationDetails).collect(Collectors.toSet());
     }
 
     @Named("userToUserDetails")

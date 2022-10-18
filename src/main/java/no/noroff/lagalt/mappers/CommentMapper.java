@@ -70,11 +70,4 @@ public abstract class CommentMapper {
         return userService.findById(id);
     }
 
-
-    abstract Comment commentDetailsToComment(CommentDetails commentDetails);
-
-    abstract CommentDetails commentToCommentDetails(Comment comment);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract Comment updateCommentFromCommentDetails(CommentDetails commentDetails, @MappingTarget Comment comment);
 }
