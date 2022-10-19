@@ -182,6 +182,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void removeMembers(String[] members, int id) {
+        Project project = projectService.findById(id);
+
+        for (String memberId : members) {
+            User user = this.findById(memberId);
+            user.getProjectsParticipated().remove(project);
+            userRepository.save(user);
+        }
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

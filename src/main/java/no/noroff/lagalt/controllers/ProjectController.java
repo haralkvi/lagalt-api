@@ -154,7 +154,7 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}/members")
+    @PostMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
         for (String uId : members) {
@@ -164,6 +164,19 @@ public class ProjectController {
         }
 
         userService.addMembers(members, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}/members")
+    public ResponseEntity<?> removeMember(@RequestBody String[] members, @PathVariable int id) {
+
+        for (String uId : members) {
+            if (!userService.existsById(uId)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        userService.removeMembers(members, id);
         return ResponseEntity.noContent().build();
     }
 
