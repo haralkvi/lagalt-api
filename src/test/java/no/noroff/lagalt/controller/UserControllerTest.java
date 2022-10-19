@@ -272,7 +272,7 @@ public class UserControllerTest {
         ResponseEntity<?> result = userController.addToClickHistory(projectId,id);
 
         //assert
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
     }
 
     //changeDescription

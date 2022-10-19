@@ -32,8 +32,8 @@ public class ApplicationController {
             @ApiResponse(responseCode = "200",
                     description = "All applications received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "Applications not found",
                     content = @Content)
     })
     @GetMapping
