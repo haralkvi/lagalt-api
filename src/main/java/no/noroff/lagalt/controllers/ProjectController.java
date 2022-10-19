@@ -188,4 +188,26 @@ public class ProjectController {
         projectService.addTags(tags, id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Update project's list of needed skills")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Project's list of needed skills has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project not found",
+                    content = @Content)
+    })
+    @PutMapping("{id}/needed-skills")
+    public ResponseEntity<?> updatedSkills(@RequestBody String[] skills, @PathVariable int id) {
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        projectService.addSkills(skills, id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -85,4 +85,11 @@ public class ProjectServiceImpl implements ProjectService {
         project.setTags(Arrays.stream(tags).collect(Collectors.toSet()));
         projectRepository.save(project);
     }
+
+    @Override
+    public void addSkills(String[] skills, int id) {
+        Project project = this.findById(id);
+        project.setSkillsNeeded(Arrays.stream(skills).collect(Collectors.toSet()));
+        projectRepository.save(project);
+    }
 }

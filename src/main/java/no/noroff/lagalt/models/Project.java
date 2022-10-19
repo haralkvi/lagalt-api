@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -41,6 +40,9 @@ public class Project {
 
     @ElementCollection
     private Set<String> tags;
+
+    @ElementCollection
+    private Set<String> skillsNeeded;
 
     @Column(name="summary")
     private String summary;
