@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-@CrossOrigin(origins = "localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping(path = "api/v1/applications")
 public class ApplicationController {
