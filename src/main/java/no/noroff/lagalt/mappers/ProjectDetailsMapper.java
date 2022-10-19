@@ -9,10 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public abstract class ProjectDetailsMapper {
 
-    public abstract Project projectDetailsToProject(ProjectDetails projectDetails);
-
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
+    @Mapping(target = "owner", source = "owner.id")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "tags", source = "tags")
     @Mapping(target = "summary", source = "summary")
