@@ -2,8 +2,8 @@ package no.noroff.lagalt.controller;
 
 
 import no.noroff.lagalt.controllers.UserController;
-import no.noroff.lagalt.dtos.UserGetDTO;
-import no.noroff.lagalt.dtos.UserPostDTO;
+import no.noroff.lagalt.dtos.get.UserGetDTO;
+import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.models.UserPutDTO;
@@ -23,8 +23,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -226,7 +225,7 @@ public class UserControllerTest {
         //arrange
         String[] skillset = {skill1,skill2};
         when(userService.existsById(anyString())).thenReturn(true);
-        doReturn(null).when(userService).updateSkillset(any(),anyString());
+        doNothing().when(userService).updateSkillset(any(),anyString());
 
         //act
         ResponseEntity<?> result = userController.updateSkillset(skillset,id);
@@ -239,7 +238,7 @@ public class UserControllerTest {
     public void TestUpdateSkillset_ReturnBadRequest(){
         String[] skillset = {};
         when(userService.existsById(anyString())).thenReturn(false);
-        doReturn(null).when(userService).updateSkillset(any(),anyString());
+        doNothing().when(userService).updateSkillset(any(),anyString());
 
         //act
         ResponseEntity<?> result = userController.updateSkillset(skillset,"4");
@@ -251,36 +250,85 @@ public class UserControllerTest {
     //addToClickHistory
     @Test
     public void TestAddToClickHistory_ReturnOK(){
+        //arrange
+        int projectId = 1;
+        when(userService.addToClickHistory(anyInt(),anyString())).thenReturn(true);
 
+        //act
+        ResponseEntity<?> result = userController.addToClickHistory(projectId,id);
+
+        //assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     //addToClickHistory 400
     @Test
     public void TestAddToClickHistory_ReturnNotFound(){
+        //arrange
+        int projectId = 4;
+        when(userService.addToClickHistory(anyInt(),anyString())).thenReturn(false);
 
+        //act
+        ResponseEntity<?> result = userController.addToClickHistory(projectId,id);
+
+        //assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     //changeDescription
     @Test
     public void TestChangeDescription_ReturnOK(){
+        //arrange
+        String[] description = {"test"};
+        doNothing().when(userService).changeDescription(any(),anyString());
 
+        //act
+        ResponseEntity<?> result = userController.changeDescription(description,id);
+
+        //assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     //changeDescription 400
     @Test
     public void TestChangeDescription_ReturnBadRequest(){
+        //arrange
+        String[] descriptionEmpty = {};
+        doNothing().when(userService).changeDescription(any(),anyString());
+
+        //act
+        ResponseEntity<?> result = userController.changeDescription(descriptionEmpty,id);
+
+        //assert
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
     }
 
     //delete
     @Test
     public void TestDelete_ReturnNoContent(){
+        //arrange
+        when(userService.findById(anyString())).thenReturn(user);
+        doNothing().when(userService).deleteById(anyString());
 
+        //act
+        ResponseEntity<?> result = userController.delete(id);
+
+        //assert
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     //delete 404
     @Test
     public void TestDelete_ReturnNotFound(){
+        //arrange
+        when(userService.findById(anyString())).thenReturn(null);
+        doNothing().when(userService).deleteById(anyString());
 
+        //act
+        ResponseEntity<?> result = userController.delete("4");
+
+        //assert
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
     }
 }
