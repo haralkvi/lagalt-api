@@ -69,11 +69,4 @@ public abstract class ApplicationMapper {
     Project mapToProject(int id) {
         return projectService.findById(id);
     }
-
-    abstract Application applicationDetailsToApplication(ApplicationDetails applicationDetails);
-
-    abstract ApplicationDetails applicationToApplicationDetails(Application application);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract Application updateApplicationFromApplicationDetails(ApplicationDetails applicationDetails, @MappingTarget Application application);
 }

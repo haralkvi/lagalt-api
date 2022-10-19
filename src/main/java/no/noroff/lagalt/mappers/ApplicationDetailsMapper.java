@@ -9,11 +9,6 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public abstract class ApplicationDetailsMapper {
 
-    @Mapping(target = "application_id", source = "application_id")
-    @Mapping(target = "time", source = "time")
+    @Mapping(target = "user", source = "user.id")
     abstract ApplicationDetails applicationToApplicationDetails(Application application);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract Application updateApplicationFromApplicationDetails(ApplicationDetails applicationDetails, @MappingTarget Application application);
-
 }
