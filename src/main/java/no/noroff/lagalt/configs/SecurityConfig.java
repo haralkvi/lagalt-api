@@ -25,7 +25,7 @@ public class SecurityConfig {
 //                // Only admin may in any way access or manipulate users endpoint
 //                .mvcMatchers( "/api/v1/users").hasRole("ADMIN")
                 // Everyone gets to access all other endpoints
-                .mvcMatchers(HttpMethod.GET, "/api/v1/*").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                 // Other endpoints may only be accessed by authenticated users
                 .anyRequest().authenticated()
             )
