@@ -154,7 +154,19 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}/members")
+    @Operation(summary = "Add member to project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User succesfully added as member to project",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project or user not found",
+                    content = @Content)
+    })
+    @PostMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
         for (String uId : members) {
@@ -164,6 +176,31 @@ public class ProjectController {
         }
 
         userService.addMembers(members, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Remove member from project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Member has been removed",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project or user has not been found",
+                    content = @Content)
+    })
+    @DeleteMapping("{id}/members")
+    public ResponseEntity<?> removeMember(@RequestBody String[] members, @PathVariable int id) {
+
+        for (String uId : members) {
+            if (!userService.existsById(uId)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        userService.removeMembers(members, id);
         return ResponseEntity.noContent().build();
     }
 
