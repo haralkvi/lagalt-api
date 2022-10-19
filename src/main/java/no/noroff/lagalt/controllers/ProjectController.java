@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "localhost:3000")
 @RestController
 @RequestMapping(path = "api/v1/projects")
 public class ProjectController {
