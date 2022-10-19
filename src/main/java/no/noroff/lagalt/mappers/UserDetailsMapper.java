@@ -15,8 +15,4 @@ public abstract class UserDetailsMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "description", source = "description")
     abstract UserDetails userToUserDetails(User user);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    abstract User updateUserFromUserDetails(UserDetails userDetails, @MappingTarget User user);
-
 }
