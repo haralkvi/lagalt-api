@@ -11,4 +11,5 @@ public class ApplicationGetDTO {
     private UserDetails user;
     private ProjectDetails project;
     private String time;
+    private String text;
 }

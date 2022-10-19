@@ -9,4 +9,5 @@ public class ApplicationPostDTO {
     private String user;
     private int project;
     private String time;
+    private String text;
 }
