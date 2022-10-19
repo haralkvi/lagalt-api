@@ -17,6 +17,7 @@ public class ProjectDetails implements Serializable {
     private final ProjectCategory category;
     private final ProjectStatus status;
     private final Collection<String> tags;
+    private final Collection<String> skillsNeeded;
     private final String summary;
     private final String link;
 }
