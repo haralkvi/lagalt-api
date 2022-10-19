@@ -23,6 +23,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -48,9 +49,7 @@ public class UserControllerTest {
     HashSet<String> skillset = new HashSet<>();
     UserGetDTO userGetDTO = new UserGetDTO();
     boolean hidden;
-
     User user = new User();
-
 
     @Before
     public void init(){
@@ -77,10 +76,9 @@ public class UserControllerTest {
 
     }
 
-
     //getAll
     @Test
-    public void testGetAll(){
+    public void TestGetAll_ReturnOK(){
         //Arrange
 
         User user2 = new User();
@@ -108,7 +106,7 @@ public class UserControllerTest {
 
     //getAll NOT FOUND
     @Test
-    public void testGetAll_error(){
+    public void TestGetAll_ReturnNotFound(){
 
         Collection<UserGetDTO> list = new ArrayList<>();
         Collection<User> listUsers = new ArrayList<>();
@@ -124,7 +122,7 @@ public class UserControllerTest {
 
     //getById
     @Test
-    public void testById(){
+    public void TestGetById_ReturnOK(){
         when(userService.findById(anyString())).thenReturn(user);
         when(userMapper.userToUserDTO(user)).thenReturn(userGetDTO);
 
@@ -139,7 +137,7 @@ public class UserControllerTest {
 
     //getByID NOT FOUND
     @Test
-    public void testByIdNotFound(){
+    public void TestGetById_ReturnNotFound(){
         when(userService.findById(anyString())).thenReturn(null);
         when(userMapper.userToUserDTO((User) null)).thenReturn(null);
 
@@ -157,7 +155,7 @@ public class UserControllerTest {
 
     //add
     @Test
-    public void testAdd(){
+    public void TestAdd_ReturnCreated(){
         //arrange
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setId(id);
@@ -177,7 +175,7 @@ public class UserControllerTest {
 
     //add 400
     @Test
-    public void testAddError(){
+    public void TestAdd_ReturnBadRequest(){
 
         UserPostDTO userPostDTO = new UserPostDTO();
 
@@ -193,7 +191,7 @@ public class UserControllerTest {
 
     //update
     @Test
-    public void testUpdate(){
+    public void TestUpdate_ReturnNoContent(){
         //arrange
         UserPutDTO userPutDTO = new UserPutDTO(id,name,email);
 
@@ -205,15 +203,13 @@ public class UserControllerTest {
 
         //assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-
     }
 
     //update 400
     @Test
-    public void testUpdateError(){
+    public void TestUpdate_ReturnBadRequest(){
 
         UserPutDTO userPutDTO = new UserPutDTO("0",null,null);
-
         when(userMapper.userPutDTOtoUser(userPutDTO)).thenReturn(user);
 
         //act
@@ -225,23 +221,66 @@ public class UserControllerTest {
     }
 
     //updateSkillset
+    @Test
+    public void TestUpdateSkillset_ReturnOK(){
+        //arrange
+        String[] skillset = {skill1,skill2};
+        when(userService.existsById(anyString())).thenReturn(true);
+        doReturn(null).when(userService).updateSkillset(any(),anyString());
 
+        //act
+        ResponseEntity<?> result = userController.updateSkillset(skillset,id);
+
+        //assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
     //updateSkillset 400
+    @Test
+    public void TestUpdateSkillset_ReturnBadRequest(){
+        String[] skillset = {};
+        when(userService.existsById(anyString())).thenReturn(false);
+        doReturn(null).when(userService).updateSkillset(any(),anyString());
+
+        //act
+        ResponseEntity<?> result = userController.updateSkillset(skillset,"4");
+
+        //assert
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
 
     //addToClickHistory
+    @Test
+    public void TestAddToClickHistory_ReturnOK(){
+
+    }
 
     //addToClickHistory 400
+    @Test
+    public void TestAddToClickHistory_ReturnNotFound(){
+
+    }
 
     //changeDescription
+    @Test
+    public void TestChangeDescription_ReturnOK(){
+
+    }
 
     //changeDescription 400
+    @Test
+    public void TestChangeDescription_ReturnBadRequest(){
+
+    }
 
     //delete
+    @Test
+    public void TestDelete_ReturnNoContent(){
+
+    }
 
     //delete 404
+    @Test
+    public void TestDelete_ReturnNotFound(){
 
-    //hidden
-
-    //hidden 404
-
+    }
 }
