@@ -116,6 +116,7 @@ public class ProjectControllerTest {
     public void TestAdd_ReturnCreated(){
 
         Project project = new Project();
+        project.setId(1);
         ProjectPostDTO projectPostDTO = new ProjectPostDTO();
         when(projectService.existsById(anyInt())).thenReturn(true);
         when(projectService.add(any(Project.class))).thenReturn(project);
@@ -130,7 +131,7 @@ public class ProjectControllerTest {
 
     //add bad request
     @Test
-    public void TestAdd_ReturnBadRequest(){
+    public void TestAdd_ReturnNotFound(){
 
         ProjectPostDTO projectPostDTO = new ProjectPostDTO();
         when(projectService.existsById(anyInt())).thenReturn(true);
@@ -140,25 +141,9 @@ public class ProjectControllerTest {
         ResponseEntity<?> result = projectController.add(projectPostDTO);
 
         //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-
-    }
-    @Test
-    public void TestAdd_ReturnNotFound(){
-
-        Project project = new Project();
-        ProjectPostDTO projectPostDTO = new ProjectPostDTO();
-        when(projectService.existsById(anyInt())).thenReturn(false);
-        when(projectService.add(any(Project.class))).thenReturn(project);
-
-        //act
-        ResponseEntity<?> result = projectController.add(projectPostDTO);
-
-        //assert
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
 
     }
-
     //update
     @Test
     public void TestUpdate_ReturnNoContent(){
@@ -265,7 +250,7 @@ public class ProjectControllerTest {
         ResponseEntity<?> result = projectController.addTags(tags,1);
 
         //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
     }
 
@@ -298,7 +283,7 @@ public class ProjectControllerTest {
         ResponseEntity<?> result = projectController.updatedSkills(skills,1);
 
         //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
     }
 

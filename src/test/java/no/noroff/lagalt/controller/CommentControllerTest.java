@@ -111,6 +111,7 @@ public class CommentControllerTest {
         //arrange
         CommentPostDTO commentPostDTO = new CommentPostDTO();
         Comment comment = new Comment();
+        comment.setId(1);
 
         when(userService.existsById(anyString())).thenReturn(true);
         when(projectService.existsById(anyInt())).thenReturn(true);
@@ -136,7 +137,7 @@ public class CommentControllerTest {
         //act
         ResponseEntity<?> result = commentController.add(commentPostDTO);
         //assert
-        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
     //delete
@@ -158,7 +159,7 @@ public class CommentControllerTest {
         ResponseEntity<?> result = commentController.delete(0);
 
         //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
 
