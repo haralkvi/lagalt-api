@@ -10,7 +10,7 @@ import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.models.UserPutDTO;
+import no.noroff.lagalt.dtos.put.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

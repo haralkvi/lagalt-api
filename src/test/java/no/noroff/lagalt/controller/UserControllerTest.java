@@ -6,7 +6,7 @@ import no.noroff.lagalt.dtos.get.UserGetDTO;
 import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.models.UserPutDTO;
+import no.noroff.lagalt.dtos.put.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 
 import org.junit.Before;

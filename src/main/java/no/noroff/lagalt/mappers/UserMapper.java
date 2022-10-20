@@ -1,12 +1,11 @@
 package no.noroff.lagalt.mappers;
 
 import no.noroff.lagalt.dtos.details.ProjectDetails;
-import no.noroff.lagalt.dtos.details.UserDetails;
 import no.noroff.lagalt.dtos.get.UserGetDTO;
 import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.models.UserPutDTO;
+import no.noroff.lagalt.dtos.put.UserPutDTO;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
