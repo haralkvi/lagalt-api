@@ -52,7 +52,9 @@ public class CommentControllerTest {
         Comment comment = new Comment();
         Collection<Comment> comments = new ArrayList<>();
         comments.add(comment);
+        CommentGetDTO commentGetDTO = new CommentGetDTO();
         Collection<CommentGetDTO> dtos = new ArrayList<>();
+        dtos.add(commentGetDTO);
 
         when(commentMapper.commentToCommentDTO(anyCollection())).thenReturn(dtos);
         when(commentService.findAll()).thenReturn(comments);
@@ -110,6 +112,8 @@ public class CommentControllerTest {
     public void TestAdd_ReturnCreated(){
         //arrange
         CommentPostDTO commentPostDTO = new CommentPostDTO();
+        commentPostDTO.setUser("1");
+        commentPostDTO.setProject(1);
         Comment comment = new Comment();
         comment.setId(1);
 
