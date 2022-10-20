@@ -19,6 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
@@ -44,11 +47,13 @@ public class ProjectControllerTest {
     //getAll
     @Test
     public void TestGetAll_ReturnOK(){
+        Collection<Project> projects = new ArrayList<>();
         Project project = new Project();
-        ProjectGetDTO projectGetDTO = new ProjectGetDTO();
+        projects.add(project);
+        Collection<ProjectGetDTO> projectGetDTOS = new ArrayList<>();
 
-        when(projectService.findById(anyInt())).thenReturn(project);
-        when(projectMapper.projectToProjectDTO(any(Project.class))).thenReturn(projectGetDTO);
+        when(projectService.findAll()).thenReturn(projects);
+        when(projectMapper.projectToProjectDTO(anyCollection())).thenReturn(projectGetDTOS);
 
         //act
         ResponseEntity<?> result = projectController.getAll();
@@ -61,10 +66,9 @@ public class ProjectControllerTest {
     //getAll not found
     @Test
     public void TestGetAll_ReturnNotFound(){
-        Project project = new Project();
 
-        when(projectService.findById(anyInt())).thenReturn(project);
-        when(projectMapper.projectToProjectDTO(any(Project.class))).thenReturn(null);
+        when(projectService.findAll()).thenReturn(null);
+        when(projectMapper.projectToProjectDTO(anyCollection())).thenReturn(null);
 
         //act
         ResponseEntity<?> result = projectController.getAll();
@@ -127,7 +131,7 @@ public class ProjectControllerTest {
     //add bad request
     @Test
     public void TestAdd_ReturnBadRequest(){
-        
+
         ProjectPostDTO projectPostDTO = new ProjectPostDTO();
         when(projectService.existsById(anyInt())).thenReturn(true);
         when(projectService.add(any(Project.class))).thenReturn(null);
