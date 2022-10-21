@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A helper class for finding recommended projects for a given user.
@@ -19,7 +20,7 @@ public class RecommendationUtil {
     @Autowired
     ProjectRepository projectRepository;
 
-    private static int NUMBER_OF_RECOMMENDATIONS = 10;
+    private static int NUMBER_OF_RECOMMENDATIONS = 5;
 
 
     /**
@@ -30,8 +31,11 @@ public class RecommendationUtil {
      * @return a collection of recommended projects
      */
     public Collection<Project> getRecommendedProjects(User user) {
+        System.out.println("ENTERING getRecommendedProjects");
         Collection<Project> allProjects = projectRepository.findAll();
+        System.out.println("allProjects = " + allProjects.stream().map( Project::getName).collect(Collectors.toSet()));
         Collection<String> userSkills = user.getSkillSet();
+        System.out.println("userSkills: " + userSkills);
 
         Collection<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);
 
@@ -49,13 +53,17 @@ public class RecommendationUtil {
     private Collection<Project> calculateRecommendedProjects(Collection<Project> projects,
                                                              Collection<String> skills)
     {
+        System.out.println("ENTERING calculateRecommendedProjects");
+
         Map<Project, Double> projectScores = new HashMap<>();
 
         for (Project project : projects) {
+            System.out.println("project = " + project.getName());
             double projectScore = calculateProjectScore(skills, project);
             projectScores.put(project, projectScore);
         }
 
+        System.out.println("projectScores = " + projectScores);
         Collection<Project> recommendations = extractTopProjects(projectScores);
 
         return recommendations;
@@ -71,15 +79,19 @@ public class RecommendationUtil {
      * @return project's recommendation score
      */
     private double calculateProjectScore(Collection<String> skills, Project project) {
+        System.out.println("ENTERING calculateProjectScore");
+
         double matches = 0;
 
-        for (String tag : project.getTags()) {
-            if (skills.contains(tag)) {
+        for (String neededSkill : project.getSkillsNeeded()) {
+            System.out.println("neededSkill = " + neededSkill);
+            if (skills.contains(neededSkill)) {
                 matches++;
             }
         }
-
-        return skills.size() / matches;
+        System.out.println("Found " + matches + " matches for project " + project.getName());
+        System.out.println("This gives a total score of: " + (matches / skills.size()));
+        return matches / skills.size();
     }
 
     /**
@@ -90,16 +102,24 @@ public class RecommendationUtil {
      * @return an unordered collection of n projects
      */
     private Collection<Project> extractTopProjects(Map<Project, Double> projectScores) {
+        System.out.println("ENTERING extractTopProjects");
+
         Collection<Project> topProjects = new HashSet<>();
 
         // find the top n projects
+        System.out.println("ENTERING LOOP");
         int n = NUMBER_OF_RECOMMENDATIONS;
-        while (n > 0) {
+        while (n > 0 && !projectScores.isEmpty()) {
+            System.out.println("n = " + n);
             Map.Entry<Project, Double> maxEntry = Collections.max(
                     projectScores.entrySet(),
                     Comparator.comparing(Map.Entry::getValue));
+            System.out.println("maxEntry = " + maxEntry);
             topProjects.add(maxEntry.getKey());
-            projectScores.remove(maxEntry);
+            projectScores.remove(maxEntry.getKey());
+            System.out.println("topProjects = " + topProjects);
+            System.out.println("projectScores = " + projectScores);
+            System.out.println("Is projectScores empty? " + projectScores.isEmpty());
             n--;
         }
 
