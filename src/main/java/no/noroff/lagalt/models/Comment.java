@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -28,7 +29,7 @@ public class Comment {
     public String text;
 
     @Timestamp
-    public String time;
+    public LocalDate time;
 
 
 }
