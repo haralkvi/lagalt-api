@@ -105,6 +105,11 @@ public class ApplicationController {
         if (id != application.getApplication_id()) {
             return ResponseEntity.badRequest().build();
         }
+
+        if (!applicationService.existsById(id)) {
+            throw new ApplicationNotFoundException(id);
+        }
+
         applicationService.update(application);
         return ResponseEntity.noContent().build();
     }
@@ -123,6 +128,7 @@ public class ApplicationController {
         if (!applicationService.existsById(id)) {
             throw new ApplicationNotFoundException(id);
         }
+
         applicationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
