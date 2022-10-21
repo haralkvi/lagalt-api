@@ -1,5 +1,6 @@
 package no.noroff.lagalt.services;
 
+import no.noroff.lagalt.exceptions.ApplicationNotFoundException;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.repositories.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
 
     @Override
-    public Application findById(Integer integer) {
-        Optional<Application> opt = applicationRepository.findById(integer);
-        return opt.orElse(null);
+    public Application findById(Integer id) {
+        return applicationRepository.findById(id).orElseThrow(() -> new ApplicationNotFoundException(id));
     }
 
     @Override
