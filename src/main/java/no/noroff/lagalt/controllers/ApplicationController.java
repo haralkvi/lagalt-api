@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.ApplicationPostDTO;
+import no.noroff.lagalt.exceptions.ApplicationNotFoundException;
 import no.noroff.lagalt.mappers.*;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;
@@ -119,8 +120,8 @@ public class ApplicationController {
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
-            return ResponseEntity.badRequest().build();
+        if (!applicationService.existsById(id)) {
+            throw new ApplicationNotFoundException(id);
         }
         applicationService.deleteById(id);
         return ResponseEntity.noContent().build();
