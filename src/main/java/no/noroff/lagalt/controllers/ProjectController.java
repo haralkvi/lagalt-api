@@ -32,10 +32,11 @@ public class ProjectController {
     private ProjectService projectService;
 
     @Autowired
-    private ProjectMapper projectMapper;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private ProjectMapper projectMapper;
+
 
     @Operation(summary = "Gets all projects")
     @ApiResponses(value = {
@@ -86,8 +87,15 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
         Project project = projectService.add(projectMapper.projectPostDTOtoProject(projectInput));
-        URI location = URI.create("projects/" + project.getId());
-        return ResponseEntity.created(location).build();
+        
+        userService.addMembers(new String[]{project.getOwner().getId()}, project.getId());
+
+        if (project != null) {
+            URI location = URI.create("projects/" + project.getId());
+            return ResponseEntity.created(location).build();
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "Updates a specified project")
@@ -150,19 +158,20 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Add a user as a member to a project")
+
+    @Operation(summary = "Add member to project")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
-                    description = "User has been added as member of project",
+                    description = "User succesfully added as member to project",
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed request",
                     content = @Content),
             @ApiResponse(responseCode = "404",
-                    description = "The project or user with provided IDs do not exist",
+                    description = "Project or user not found",
                     content = @Content)
     })
-    @PutMapping("{id}/members")
+    @PostMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
 
         for (String uId : members) {
@@ -175,4 +184,72 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Remove member from project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Member has been removed",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project or user has not been found",
+                    content = @Content)
+    })
+    @DeleteMapping("{id}/members")
+    public ResponseEntity<?> removeMember(@RequestBody String[] members, @PathVariable int id) {
+
+        for (String uId : members) {
+            if (!userService.existsById(uId)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        userService.removeMembers(members, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Update project's list of tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Project's tags list has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project not found",
+                    content = @Content)
+    })
+    @PutMapping("{id}/tags")
+    public ResponseEntity<?> addTags(@RequestBody String[] tags, @PathVariable int id) {
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        projectService.addTags(tags, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Update project's list of needed skills")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Project's list of needed skills has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Project not found",
+                    content = @Content)
+    })
+    @PutMapping("{id}/needed-skills")
+    public ResponseEntity<?> updatedSkills(@RequestBody String[] skills, @PathVariable int id) {
+        if (!projectService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        projectService.addSkills(skills, id);
+        return ResponseEntity.noContent().build();
+    }
 }

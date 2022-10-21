@@ -106,13 +106,19 @@ public class UserServiceImpl implements UserService {
      * @param id Integer that refers to an users id
      * @author Marius Olafsen
      */
-    public void addToClickHistory(int projectId, String id){
+
+    public boolean addToClickHistory(int projectId, String id){
         // find user and user's set of clicked projects
         User user = this.findById(id);
+        if (user == null) {
+            return false;
+        }
+
         Set<Project> projects = user.getProjectsHistory();
 
         // find project to be added to user's click history
-        Project project = projectService.findById(projectId);
+           Project project = projectService.findById(projectId);
+            if(project==null)return false;
 
         // add project to user's click history
         projects.add(project);
@@ -120,6 +126,7 @@ public class UserServiceImpl implements UserService {
         // persist changes
         user.setProjectsHistory(projects);
         userRepository.save(user);
+        return true;
     }
 
     /** Changes the description of the current user
@@ -171,6 +178,18 @@ public class UserServiceImpl implements UserService {
     public void addMembers(String[] members, int id) {
         for (String member : members){
             this.addMember(member, id);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeMembers(String[] members, int id) {
+        Project project = projectService.findById(id);
+
+        for (String memberId : members) {
+            User user = this.findById(memberId);
+            user.getProjectsParticipated().remove(project);
+            userRepository.save(user);
         }
     }
 

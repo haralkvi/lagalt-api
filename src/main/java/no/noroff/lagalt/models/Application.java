@@ -1,6 +1,7 @@
 package no.noroff.lagalt.models;
 
 
+import jdk.jfr.Name;
 import jdk.jfr.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,4 +31,6 @@ public class Application {
     @Timestamp
     public String time;
 
+    @Column(name = "motivational_text")
+    public String text;
 }

@@ -2,13 +2,14 @@ package no.noroff.lagalt.services;
 
 import no.noroff.lagalt.exceptions.ProjectNotFoundException;
 import no.noroff.lagalt.models.Project;
+import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -76,4 +77,17 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsById(id);
     }
 
+    @Override
+    public void addTags(String[] tags, int id) {
+        Project project = this.findById(id);
+        project.setTags(Arrays.stream(tags).collect(Collectors.toSet()));
+        projectRepository.save(project);
+    }
+
+    @Override
+    public void addSkills(String[] skills, int id) {
+        Project project = this.findById(id);
+        project.setSkillsNeeded(Arrays.stream(skills).collect(Collectors.toSet()));
+        projectRepository.save(project);
+    }
 }
