@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 public class CommentDetails implements Serializable {
     private final int id;
+    private final String username;
     private final String text;
     private final String time;
 }

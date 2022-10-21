@@ -56,6 +56,13 @@ public abstract class ProjectMapper {
         return list;
     }
 
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "members", ignore = true)
+    @Mapping(target = "userViews", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "applications", ignore = true)
+    public abstract Project projectPutDTOToProject(ProjectPutDTO projectPutDTO);
+
     @Named("commentsToCommentDetails")
     Set<CommentDetails> mapCommentsToDetails(Set<Comment> comments) {
         if (comments == null)
@@ -63,7 +70,7 @@ public abstract class ProjectMapper {
         return comments.stream()
                 .map(commentDetailsMapper::commentToCommentDetails).collect(Collectors.toSet());
     }
-    
+
     @Named("applicationsToApplicationDetails")
     Set<ApplicationDetails> mapApplicationsToDetails(Set<Application> applications) {
         if (applications == null)
@@ -113,14 +120,4 @@ public abstract class ProjectMapper {
     User mapToUser(String id) {
         return userService.findById(id);
     }
-
-    @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "members", ignore = true)
-    @Mapping(target = "userViews", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "applications", ignore = true)
-    public abstract Project projectPutDTOToProject(ProjectPutDTO projectPutDTO);
-
-    public abstract ProjectPutDTO projectToProjectPutDTO(Project project);
-
 }

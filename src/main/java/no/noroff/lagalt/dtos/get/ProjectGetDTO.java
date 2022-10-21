@@ -19,10 +19,10 @@ public class ProjectGetDTO {
     private String category;
     private String status;
     private Collection<String> tags;
+    private Collection<String> skillsNeeded;
     private String summary;
     private Set<CommentDetails> comments;
     private String image;
     private String link;
     private Set<ApplicationDetails> applications;
-
 }

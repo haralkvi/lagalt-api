@@ -9,6 +9,8 @@ import java.io.Serializable;
  */
 @Data
 public class ApplicationDetails implements Serializable {
+    private final String user;
     private final int application_id;
     private final String time;
+    private final String text;
 }
