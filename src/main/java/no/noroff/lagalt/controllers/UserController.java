@@ -218,10 +218,6 @@ public class UserController {
     })
     @PutMapping("{id}/skillset")
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
-        if (!userService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
