@@ -128,23 +128,23 @@ public class CommentControllerTest {
         //assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
-
-    //add bad request
-    @Test
-    public void TestAdd_ReturnBadRequest(){
-        //arrange
-        CommentPostDTO commentPostDTO = new CommentPostDTO();
-        Comment comment = new Comment();
-
-        when(userService.existsById(anyString())).thenReturn(false);
-        when(projectService.existsById(anyInt())).thenReturn(false);
-        when(commentMapper.commentPostDTOtoComment(any(CommentPostDTO.class))).thenReturn(comment);
-        when(commentService.add(any(Comment.class))).thenReturn(comment);
-        //act
-        ResponseEntity<?> result = commentController.add(commentPostDTO);
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-    }
+//
+//    //add bad request
+//    @Test
+//    public void TestAdd_ReturnBadRequest(){
+//        //arrange
+//        CommentPostDTO commentPostDTO = new CommentPostDTO();
+//        Comment comment = new Comment();
+//
+//        when(userService.existsById(anyString())).thenReturn(false);
+//        when(projectService.existsById(anyInt())).thenReturn(false);
+//        when(commentMapper.commentPostDTOtoComment(any(CommentPostDTO.class))).thenReturn(comment);
+//        when(commentService.add(any(Comment.class))).thenReturn(comment);
+//        //act
+//        ResponseEntity<?> result = commentController.add(commentPostDTO);
+//        //assert
+//        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+//    }
 
     //delete
     @Test
