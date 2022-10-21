@@ -3,11 +3,13 @@ package no.noroff.lagalt.controller;
 import no.noroff.lagalt.controllers.CommentController;
 import no.noroff.lagalt.dtos.get.CommentGetDTO;
 import no.noroff.lagalt.dtos.post.CommentPostDTO;
+import no.noroff.lagalt.exceptions.CommentNotFoundException;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.CommentService;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -149,21 +151,22 @@ public class CommentControllerTest {
     public void TestDelete_ReturnNoContent(){
         //arrange
         doNothing().when(commentService).deleteById(anyInt());
+        when(commentService.existsById(anyInt())).thenReturn(true);
         //act
         ResponseEntity<?> result = commentController.delete(5);
         //assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
+
     //delete bad request TODO: why not 404
     @Test
-    public void TestDelete_ReturnBadRequest(){
+    public void TestDelete_ReturnNotFound(){
         //arrange
         doNothing().when(commentService).deleteById(anyInt());
-        //act
-        ResponseEntity<?> result = commentController.delete(0);
+        when(commentService.existsById(anyInt())).thenReturn(false);
 
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.delete(0));
     }
 
 
@@ -187,10 +190,8 @@ public class CommentControllerTest {
         //arrange
         when(commentService.existsById(anyInt())).thenReturn(false);
         doNothing().when(commentService).updateText(anyString(),anyInt());
-        //act
-        ResponseEntity<?> result = commentController.editComment("Test",5);
 
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.editComment("Test", 5));
     }
 }

@@ -4,11 +4,13 @@ package no.noroff.lagalt.controller;
 import no.noroff.lagalt.controllers.UserController;
 import no.noroff.lagalt.dtos.get.UserGetDTO;
 import no.noroff.lagalt.dtos.post.UserPostDTO;
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.dtos.put.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -309,6 +311,7 @@ public class UserControllerTest {
     public void TestDelete_ReturnNoContent(){
         //arrange
         when(userService.findById(anyString())).thenReturn(user);
+        when(userService.existsById(anyString())).thenReturn(true);
         doNothing().when(userService).deleteById(anyString());
 
         //act
@@ -325,10 +328,7 @@ public class UserControllerTest {
         when(userService.findById(anyString())).thenReturn(null);
         doNothing().when(userService).deleteById(anyString());
 
-        //act
-        ResponseEntity<?> result = userController.delete("4");
-
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(UserNotFoundException.class, () -> userController.delete("4"));
     }
 }
