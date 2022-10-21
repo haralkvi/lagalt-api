@@ -213,7 +213,6 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}/skillset")
-
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
         userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -4,6 +4,7 @@ import no.noroff.lagalt.controllers.ProjectController;
 import no.noroff.lagalt.dtos.get.ProjectGetDTO;
 import no.noroff.lagalt.dtos.post.ProjectPostDTO;
 import no.noroff.lagalt.dtos.put.ProjectPutDTO;
+import no.noroff.lagalt.exceptions.ProjectNotFoundException;
 import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
@@ -26,8 +27,7 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -102,17 +102,11 @@ public class ProjectControllerTest {
     //getById not found
     @Test
     public void TestGetById_ReturnNotFound(){
-        Project project = new Project();
+        // arrange
+        when(projectService.findById(anyInt())).thenThrow(ProjectNotFoundException.class);
 
-        when(projectService.findById(anyInt())).thenReturn(project);
-        when(projectMapper.projectToProjectDTO(any(Project.class))).thenReturn(null);
-
-        //act
-        ResponseEntity<?> result = projectController.getById(5);
-
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-
+        //act and assert
+        Assert.assertThrows(ProjectNotFoundException.class, () -> projectController.getById(5));
     }
 
     //add
@@ -207,14 +201,10 @@ public class ProjectControllerTest {
     @Test
     public void TestDelete_ReturnNotFound(){
         //arrange
-        when(projectService.existsById(anyInt())).thenReturn(false);
-        doNothing().when(projectService).deleteById(anyInt());
+        doThrow(ProjectNotFoundException.class).when(projectService).deleteById(anyInt());
 
-        //act
-        ResponseEntity<?> result = projectController.delete(5);
-
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(ProjectNotFoundException.class, () -> projectController.delete(5));
     }
 
     //addMember

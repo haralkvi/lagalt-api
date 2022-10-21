@@ -98,14 +98,9 @@ public class CommentControllerTest {
     @Test
     public void TestGetById_ReturnNotFound(){
         //arrange
-        Comment comment = new Comment();
-
-        when(commentMapper.commentToCommentDTO(any(Comment.class))).thenReturn(null);
-        when(commentService.findById(anyInt())).thenReturn(comment);
-        //act
-        ResponseEntity<?> result = commentController.getById(5);
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        when(commentService.findById(anyInt())).thenThrow(CommentNotFoundException.class);
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.getById(5));
     }
 
 
