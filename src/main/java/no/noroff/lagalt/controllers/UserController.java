@@ -240,9 +240,6 @@ public class UserController {
     })
     @PutMapping("{id}/click-history")
     public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
-        if (!projectService.existsById(projectId)) {
-            return ResponseEntity.notFound().build();
-        }
         userService.addToClickHistory(projectId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
