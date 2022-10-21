@@ -3,11 +3,13 @@ package no.noroff.lagalt.controller;
 import no.noroff.lagalt.controllers.CommentController;
 import no.noroff.lagalt.dtos.get.CommentGetDTO;
 import no.noroff.lagalt.dtos.post.CommentPostDTO;
+import no.noroff.lagalt.exceptions.CommentNotFoundException;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.CommentService;
 import no.noroff.lagalt.services.ProjectService;
 import no.noroff.lagalt.services.UserService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -96,14 +98,9 @@ public class CommentControllerTest {
     @Test
     public void TestGetById_ReturnNotFound(){
         //arrange
-        Comment comment = new Comment();
-
-        when(commentMapper.commentToCommentDTO(any(Comment.class))).thenReturn(null);
-        when(commentService.findById(anyInt())).thenReturn(comment);
-        //act
-        ResponseEntity<?> result = commentController.getById(5);
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        when(commentService.findById(anyInt())).thenThrow(CommentNotFoundException.class);
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.getById(5));
     }
 
 
@@ -126,44 +123,45 @@ public class CommentControllerTest {
         //assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
-
-    //add bad request
-    @Test
-    public void TestAdd_ReturnBadRequest(){
-        //arrange
-        CommentPostDTO commentPostDTO = new CommentPostDTO();
-        Comment comment = new Comment();
-
-        when(userService.existsById(anyString())).thenReturn(false);
-        when(projectService.existsById(anyInt())).thenReturn(false);
-        when(commentMapper.commentPostDTOtoComment(any(CommentPostDTO.class))).thenReturn(comment);
-        when(commentService.add(any(Comment.class))).thenReturn(comment);
-        //act
-        ResponseEntity<?> result = commentController.add(commentPostDTO);
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-    }
+//
+//    //add bad request
+//    @Test
+//    public void TestAdd_ReturnBadRequest(){
+//        //arrange
+//        CommentPostDTO commentPostDTO = new CommentPostDTO();
+//        Comment comment = new Comment();
+//
+//        when(userService.existsById(anyString())).thenReturn(false);
+//        when(projectService.existsById(anyInt())).thenReturn(false);
+//        when(commentMapper.commentPostDTOtoComment(any(CommentPostDTO.class))).thenReturn(comment);
+//        when(commentService.add(any(Comment.class))).thenReturn(comment);
+//        //act
+//        ResponseEntity<?> result = commentController.add(commentPostDTO);
+//        //assert
+//        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+//    }
 
     //delete
     @Test
     public void TestDelete_ReturnNoContent(){
         //arrange
         doNothing().when(commentService).deleteById(anyInt());
+        when(commentService.existsById(anyInt())).thenReturn(true);
         //act
         ResponseEntity<?> result = commentController.delete(5);
         //assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
+
     //delete bad request TODO: why not 404
     @Test
-    public void TestDelete_ReturnBadRequest(){
+    public void TestDelete_ReturnNotFound(){
         //arrange
         doNothing().when(commentService).deleteById(anyInt());
-        //act
-        ResponseEntity<?> result = commentController.delete(0);
+        when(commentService.existsById(anyInt())).thenReturn(false);
 
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.delete(0));
     }
 
 
@@ -187,10 +185,8 @@ public class CommentControllerTest {
         //arrange
         when(commentService.existsById(anyInt())).thenReturn(false);
         doNothing().when(commentService).updateText(anyString(),anyInt());
-        //act
-        ResponseEntity<?> result = commentController.editComment("Test",5);
 
-        //assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(CommentNotFoundException.class, () -> commentController.editComment("Test", 5));
     }
 }

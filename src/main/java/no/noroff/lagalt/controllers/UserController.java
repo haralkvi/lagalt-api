@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.noroff.lagalt.dtos.ProjectGetDTO;
-import no.noroff.lagalt.dtos.UserGetDTO;
-import no.noroff.lagalt.dtos.UserPostDTO;
+import no.noroff.lagalt.dtos.get.ProjectGetDTO;
+import no.noroff.lagalt.dtos.get.UserGetDTO;
+import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.exceptions.EmailAlreadyExistsException;
 import no.noroff.lagalt.exceptions.IdAlreadyExistsException;
 import no.noroff.lagalt.exceptions.UserNotFoundException;
@@ -213,7 +213,6 @@ public class UserController {
                     content = @Content)
     })
     @PutMapping("{id}/skillset")
-
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
         userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);
