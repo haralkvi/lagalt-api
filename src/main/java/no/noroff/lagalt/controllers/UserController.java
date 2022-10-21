@@ -10,8 +10,7 @@ import no.noroff.lagalt.dtos.post.UserPostDTO;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.models.UserPutDTO;
-import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.dtos.put.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,16 +36,13 @@ public class UserController {
     @Autowired
     private ProjectMapper projectMapper;
 
-    @Autowired
-    private ProjectService projectService;
-
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "All users received",
                     content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
+            @ApiResponse(responseCode = "404",
+                    description = "Element not found. Nothing changed",
                     content = @Content)
     })
     @GetMapping
@@ -238,7 +234,7 @@ public class UserController {
     public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
         if(!(userService.addToClickHistory(projectId, id))){
           return ResponseEntity.notFound().build();
-        };
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -253,7 +249,7 @@ public class UserController {
     })
     @PutMapping("{id}/description")
     public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
-        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(description.length != 1)return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
