@@ -4,11 +4,13 @@ import no.noroff.lagalt.controllers.ApplicationController;
 
 import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
+import no.noroff.lagalt.exceptions.ApplicationNotFoundException;
 import no.noroff.lagalt.mappers.ApplicationMapper;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.models.Project;
 import no.noroff.lagalt.models.User;
 import no.noroff.lagalt.services.ApplicationService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -159,6 +162,7 @@ public class ApplicationControllerTest {
         Application application = new Application();
         application.setApplication_id(1);
         when(applicationService.update(any(Application.class))).thenReturn(application);
+        when(applicationService.existsById(anyInt())).thenReturn(true);
 
         //act
         ResponseEntity<?> result = applicationController.update(application,1);
@@ -188,6 +192,7 @@ public class ApplicationControllerTest {
     public void TestDelete_ReturnNoContent(){
         //arrange
         doNothing().when(applicationService).deleteById(anyInt());
+        when(applicationService.existsById(anyInt())).thenReturn(true);
 
         //act
         ResponseEntity<?> result = applicationController.delete(1);
@@ -202,11 +207,8 @@ public class ApplicationControllerTest {
         //arrange
         doNothing().when(applicationService).deleteById(anyInt());
 
-        //act
-        ResponseEntity<?> result = applicationController.delete(0);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        //act and assert
+        Assert.assertThrows(ApplicationNotFoundException.class, () -> applicationController.delete(0));
     }
 
 }

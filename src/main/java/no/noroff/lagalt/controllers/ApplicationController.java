@@ -9,7 +9,7 @@ import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
 import no.noroff.lagalt.exceptions.ApiErrorResponse;
 import no.noroff.lagalt.exceptions.ApplicationNotFoundException;
-import no.noroff.lagalt.mappers.*;
+import no.noroff.lagalt.mappers.ApplicationMapper;
 import no.noroff.lagalt.models.Application;
 import no.noroff.lagalt.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/applications")
@@ -44,7 +45,7 @@ public class ApplicationController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         Collection<ApplicationGetDTO> applications = applicationMapper.applicationToApplicationDTO(applicationService.findAll());
-        if (applications.size()>0){
+        if (applications.size() > 0) {
             return new ResponseEntity<>(applications, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -65,7 +66,7 @@ public class ApplicationController {
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         ApplicationGetDTO application = applicationMapper.applicationToApplicationDTO(applicationService.findById(id));
-        if (application != null){
+        if (application != null) {
             return new ResponseEntity<>(application, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -89,7 +90,7 @@ public class ApplicationController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ApplicationPostDTO inputApplication) {
         Application application = applicationService.add(applicationMapper.applicationPostDTOtoApplication(inputApplication));
-        if(application != null){
+        if (application != null) {
             URI location = URI.create("applications/" + application.getApplication_id());
             return ResponseEntity.created(location).build();
         }
@@ -135,7 +136,7 @@ public class ApplicationController {
                     schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable int id){
+    public ResponseEntity<?> delete(@PathVariable int id) {
         if (!applicationService.existsById(id)) {
             throw new ApplicationNotFoundException(id);
         }

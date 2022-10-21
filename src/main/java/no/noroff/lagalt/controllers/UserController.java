@@ -230,7 +230,6 @@ public class UserController {
                     schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}/skillset")
-
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
         userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);

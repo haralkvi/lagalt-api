@@ -9,6 +9,7 @@ import no.noroff.lagalt.dtos.get.ProjectGetDTO;
 import no.noroff.lagalt.dtos.post.ProjectPostDTO;
 import no.noroff.lagalt.dtos.put.ProjectPutDTO;
 import no.noroff.lagalt.exceptions.ApiErrorResponse;
+import no.noroff.lagalt.exceptions.ProjectNotFoundException;
 import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.models.Project;
