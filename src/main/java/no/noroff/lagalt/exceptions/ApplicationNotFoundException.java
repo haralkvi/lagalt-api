@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ApplicationNotFoundException extends RuntimeException {
 
     public ApplicationNotFoundException(int id) {
-        super("Comment does not exist with ID: " + id);
+        super("Application does not exist with ID: " + id);
     }
 }
