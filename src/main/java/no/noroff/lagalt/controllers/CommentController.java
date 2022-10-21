@@ -122,6 +122,10 @@ public class CommentController {
     })
     @PutMapping("{id}/text")
     public ResponseEntity editComment(@RequestBody String text, @PathVariable int id) {
+        if (!commentService.existsById(id)) {
+            throw new CommentNotFoundException(id);
+        }
+
         commentService.updateText(text, id);
         return ResponseEntity.noContent().build();
     }
