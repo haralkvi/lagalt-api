@@ -135,7 +135,7 @@ public class UserController {
         User user = userService.findById(id);
 
         if (user != null) {
-            Collection<ProjectGetDTO> recommendedProjects =
+            List<ProjectGetDTO> recommendedProjects =
                     projectMapper.projectToProjectDTO(
                             userService.findRecommendations(user)
                     );

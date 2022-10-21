@@ -30,14 +30,14 @@ public class RecommendationUtil {
      * @param user for whom recommendations are fetched
      * @return a collection of recommended projects
      */
-    public Collection<Project> getRecommendedProjects(User user) {
+    public List<Project> getRecommendedProjects(User user) {
         System.out.println("ENTERING getRecommendedProjects");
         Collection<Project> allProjects = projectRepository.findAll();
         System.out.println("allProjects = " + allProjects.stream().map( Project::getName).collect(Collectors.toSet()));
         Collection<String> userSkills = user.getSkillSet();
         System.out.println("userSkills: " + userSkills);
 
-        Collection<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);
+        List<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);
 
         return recommendations;
     }
@@ -50,7 +50,7 @@ public class RecommendationUtil {
      * @param skills a collection of a user's skills
      * @return collection of projects
      */
-    private Collection<Project> calculateRecommendedProjects(Collection<Project> projects,
+    private List<Project> calculateRecommendedProjects(Collection<Project> projects,
                                                              Collection<String> skills)
     {
         System.out.println("ENTERING calculateRecommendedProjects");
@@ -64,7 +64,7 @@ public class RecommendationUtil {
         }
 
         System.out.println("projectScores = " + projectScores);
-        Collection<Project> recommendations = extractTopProjects(projectScores);
+        List<Project> recommendations = extractTopProjects(projectScores);
 
         return recommendations;
     }
@@ -101,10 +101,10 @@ public class RecommendationUtil {
      * @param projectScores mapping from Project to its recommendation score
      * @return an unordered collection of n projects
      */
-    private Collection<Project> extractTopProjects(Map<Project, Double> projectScores) {
+    private List<Project> extractTopProjects(Map<Project, Double> projectScores) {
         System.out.println("ENTERING extractTopProjects");
 
-        Collection<Project> topProjects = new HashSet<>();
+        List<Project> topProjects = new ArrayList<>();
 
         // find the top n projects
         System.out.println("ENTERING LOOP");
