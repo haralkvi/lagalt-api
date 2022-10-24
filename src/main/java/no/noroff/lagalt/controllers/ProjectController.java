@@ -25,7 +25,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(
+        origins = {
+                "https://sheltered-inlet-34111.herokuapp.com",
+                "http://localhost:3000/"
+        })
 @RestController
 @RequestMapping(path = "api/v1/projects")
 public class ProjectController {
