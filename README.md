@@ -33,9 +33,6 @@ Example of an endpoint: https://lagalt-api.herokuapp.com/api/v1/users/
 Other endpoints include CRUD operations for all entities:
 Users, Applications, Projects and Comments
 
-Frontend: 
----
-
 ### What is this?
 
 This is the API/Backend for Lagalt.no. Frontend is in a separate repo.
