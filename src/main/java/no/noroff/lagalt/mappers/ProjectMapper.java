@@ -14,10 +14,7 @@ import no.noroff.lagalt.services.UserService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -50,6 +47,17 @@ public abstract class ProjectMapper {
             return null;
         }
         Collection<ProjectGetDTO> list = new ArrayList<>(projects.size());
+        for (Project project : projects) {
+            list.add(projectToProjectDTO(project));
+        }
+        return list;
+    }
+
+    public List<ProjectGetDTO> projectToProjectDTO(List<Project> projects) {
+        if (projects == null) {
+            return null;
+        }
+        List<ProjectGetDTO> list = new ArrayList<>(projects.size());
         for (Project project : projects) {
             list.add(projectToProjectDTO(project));
         }

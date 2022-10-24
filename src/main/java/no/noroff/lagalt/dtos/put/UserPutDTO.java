@@ -1,6 +1,7 @@
-package no.noroff.lagalt.models;
+package no.noroff.lagalt.dtos.put;
 
 import lombok.Data;
+import no.noroff.lagalt.models.User;
 
 import java.io.Serializable;
 

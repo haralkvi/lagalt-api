@@ -5,12 +5,13 @@ import no.noroff.lagalt.models.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserService extends CrudService<User, String> {
 
     User addById(Jwt jwt);
 
-    Collection<Project> findRecommendations(User user);
+    List<Project> findRecommendations(User user);
 
     void updateSkillset(String[] skills, String id);
 

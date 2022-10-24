@@ -2,10 +2,13 @@ package no.noroff.lagalt.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.get.CommentGetDTO;
 import no.noroff.lagalt.dtos.post.CommentPostDTO;
+import no.noroff.lagalt.exceptions.ApiErrorResponse;
+import no.noroff.lagalt.exceptions.CommentNotFoundException;
 import no.noroff.lagalt.mappers.CommentMapper;
 import no.noroff.lagalt.models.Comment;
 import no.noroff.lagalt.services.*;
@@ -32,21 +35,16 @@ public class CommentController {
     @Autowired
     private CommentMapper commentMapper;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ProjectService projectService;
-
-
     @Operation(summary = "Gets all comments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "All comments received",
-                    content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = CommentGetDTO.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "No comments found",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -62,19 +60,17 @@ public class CommentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The comment has been received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = CommentGetDTO.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified comment not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         CommentGetDTO comment = commentMapper.commentToCommentDTO(commentService.findById(id));
-        if (comment != null){
-            return new ResponseEntity<>(comment, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(comment);
     }
 
     @Operation(summary = "Creates a comment")
@@ -84,26 +80,18 @@ public class CommentController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user or project IDs do not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CommentPostDTO inputComment) {
-        // comment's user has to correspond to user existing in database
-        if (!userService.existsById(inputComment.getUser()) ||
-        // comment's project has to correspond to project existing in database
-        !projectService.existsById(inputComment.getProject())) {
-
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         Comment comment = commentService.add(commentMapper.commentPostDTOtoComment(inputComment));
-
-        if (comment != null) {
-            URI location = URI.create("comments/" + comment.getId());
-            return ResponseEntity.created(location).build();
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        URI location = URI.create("comments/" + comment.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "Deletes a specified comment")
@@ -113,22 +101,39 @@ public class CommentController {
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The specified comment does not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
-        if (id == 0) {
-            return ResponseEntity.badRequest().build();
+        if (!commentService.existsById(id)) {
+            throw new CommentNotFoundException(id);
         }
+
         commentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Updates a comment's text")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Comment successfully created",
+                    content = @Content),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed body, nothing created",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user or project IDs do not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
+    })
     @PutMapping("{id}/text")
-    public ResponseEntity editComment(@RequestBody String text, @PathVariable int id) {
+    public ResponseEntity<?> editComment(@RequestBody String text, @PathVariable int id) {
         if (!commentService.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            throw new CommentNotFoundException(id);
         }
+
         commentService.updateText(text, id);
         return ResponseEntity.noContent().build();
     }

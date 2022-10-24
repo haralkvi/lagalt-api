@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A helper class for finding recommended projects for a given user.
@@ -19,7 +20,7 @@ public class RecommendationUtil {
     @Autowired
     ProjectRepository projectRepository;
 
-    private static int NUMBER_OF_RECOMMENDATIONS = 10;
+    private static final int NUMBER_OF_RECOMMENDATIONS = 10;
 
 
     /**
@@ -29,11 +30,11 @@ public class RecommendationUtil {
      * @param user for whom recommendations are fetched
      * @return a collection of recommended projects
      */
-    public Collection<Project> getRecommendedProjects(User user) {
+    public List<Project> getRecommendedProjects(User user) {
         Collection<Project> allProjects = projectRepository.findAll();
         Collection<String> userSkills = user.getSkillSet();
 
-        Collection<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);
+        List<Project> recommendations = calculateRecommendedProjects(allProjects, userSkills);
 
         return recommendations;
     }
@@ -46,7 +47,7 @@ public class RecommendationUtil {
      * @param skills a collection of a user's skills
      * @return collection of projects
      */
-    private Collection<Project> calculateRecommendedProjects(Collection<Project> projects,
+    private List<Project> calculateRecommendedProjects(Collection<Project> projects,
                                                              Collection<String> skills)
     {
         Map<Project, Double> projectScores = new HashMap<>();
@@ -56,7 +57,7 @@ public class RecommendationUtil {
             projectScores.put(project, projectScore);
         }
 
-        Collection<Project> recommendations = extractTopProjects(projectScores);
+        List<Project> recommendations = extractTopProjects(projectScores);
 
         return recommendations;
     }
@@ -73,13 +74,14 @@ public class RecommendationUtil {
     private double calculateProjectScore(Collection<String> skills, Project project) {
         double matches = 0;
 
-        for (String tag : project.getTags()) {
-            if (skills.contains(tag)) {
+        for (String neededSkill : project.getSkillsNeeded()) {
+            System.out.println("neededSkill = " + neededSkill);
+            if (skills.contains(neededSkill)) {
                 matches++;
             }
         }
 
-        return skills.size() / matches;
+        return matches / skills.size();
     }
 
     /**
@@ -89,17 +91,17 @@ public class RecommendationUtil {
      * @param projectScores mapping from Project to its recommendation score
      * @return an unordered collection of n projects
      */
-    private Collection<Project> extractTopProjects(Map<Project, Double> projectScores) {
-        Collection<Project> topProjects = new HashSet<>();
+    private List<Project> extractTopProjects(Map<Project, Double> projectScores) {
+        List<Project> topProjects = new ArrayList<>();
 
         // find the top n projects
         int n = NUMBER_OF_RECOMMENDATIONS;
-        while (n > 0) {
+        while (n > 0 && !projectScores.isEmpty()) {
             Map.Entry<Project, Double> maxEntry = Collections.max(
                     projectScores.entrySet(),
                     Comparator.comparing(Map.Entry::getValue));
             topProjects.add(maxEntry.getKey());
-            projectScores.remove(maxEntry);
+            projectScores.remove(maxEntry.getKey());
             n--;
         }
 

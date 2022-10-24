@@ -2,16 +2,20 @@ package no.noroff.lagalt.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.get.ProjectGetDTO;
 import no.noroff.lagalt.dtos.get.UserGetDTO;
 import no.noroff.lagalt.dtos.post.UserPostDTO;
+import no.noroff.lagalt.exceptions.ApiErrorResponse;
+import no.noroff.lagalt.exceptions.EmailAlreadyExistsException;
+import no.noroff.lagalt.exceptions.IdAlreadyExistsException;
+import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
 import no.noroff.lagalt.mappers.UserMapper;
 import no.noroff.lagalt.models.User;
-import no.noroff.lagalt.models.UserPutDTO;
-import no.noroff.lagalt.services.ProjectService;
+import no.noroff.lagalt.dtos.put.UserPutDTO;
 import no.noroff.lagalt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 @CrossOrigin(
         origins = {
@@ -41,17 +46,16 @@ public class UserController {
     @Autowired
     private ProjectMapper projectMapper;
 
-    @Autowired
-    private ProjectService projectService;
-
     @Operation(summary = "Gets all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "All users received",
-                    content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Malformed body, nothing received",
-                    content = @Content)
+                    content ={ @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserGetDTO.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "No users found",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -67,29 +71,29 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The user has been received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserGetDTO.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified user not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         UserGetDTO user = userMapper.userToUserDTO(userService.findById(id));
-        if (user != null){
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "Fetches the currently logged in user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The user has been received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserGetDTO.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified user not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("current")
     public ResponseEntity<?> getByJwt(@AuthenticationPrincipal Jwt jwt) {
@@ -107,17 +111,46 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Recommended projects have successfully been fetched",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ProjectGetDTO.class)) }),
+            @ApiResponse(responseCode = "400",
+                    description = "Malformed request",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified user not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("recommendations")
     public ResponseEntity<?> getRecommendations(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.findById(jwt.getClaimAsString("sub"));
 
         if (user != null) {
-            Collection<ProjectGetDTO> recommendedProjects =
+            List<ProjectGetDTO> recommendedProjects =
+                    projectMapper.projectToProjectDTO(
+                            userService.findRecommendations(user)
+                    ).stream().toList();
+            return new ResponseEntity<>(recommendedProjects, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }    @Operation(summary = "Get current user's recommended projects")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Recommended projects have successfully been fetched",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Specified user not found",
+                    content = @Content)
+    })
+    @GetMapping("{id}/recommendations")
+    public ResponseEntity<?> getUserRecommendations(@PathVariable String id) {
+        User user = userService.findById(id);
+
+        if (user != null) {
+            List<ProjectGetDTO> recommendedProjects =
                     projectMapper.projectToProjectDTO(
                             userService.findRecommendations(user)
                     );
@@ -125,7 +158,6 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @Operation(summary = "Creates a user")
@@ -135,18 +167,19 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody UserPostDTO inputUser) {
         // user's id has to be unique
         if (userService.existsById(inputUser.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new IdAlreadyExistsException(inputUser.getId());
         }
 
         // user's email has to be unique
         if (userService.existsByEmail(inputUser.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new EmailAlreadyExistsException(inputUser.getEmail());
         }
 
         User user  = userService.add(userMapper.userPostDTOtoUser(inputUser));
@@ -166,18 +199,19 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping("register")
     public ResponseEntity<?> addByJwt(@AuthenticationPrincipal Jwt jwt) {
         // user's id has to be unique
         if (userService.existsById(jwt.getClaimAsString("sub"))) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new IdAlreadyExistsException(jwt.getClaimAsString("sub"));
         }
 
         // user's email has to be unique
         if (userService.existsByEmail(jwt.getClaimAsString("email"))) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new EmailAlreadyExistsException(jwt.getClaimAsString("email"));
         }
 
         User user = userService.addById(jwt);
@@ -192,7 +226,12 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "User not found with supplied ID",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}")
     public ResponseEntity<?> update(@RequestBody UserPutDTO inputUser, @PathVariable String id) {
@@ -204,7 +243,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
     @Operation(summary = "Updates a given user's set of skills")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -212,15 +250,15 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing changed",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user ID does not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}/skillset")
-
     public ResponseEntity<?> updateSkillset(@RequestBody String[] skills, @PathVariable String id) {
-        if (!userService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         userService.updateSkillset(skills, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -232,17 +270,17 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing has been added",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
-                    description = "The project ID was not found",
-                    content = @Content)
+                    description = "Provided project ID does not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
 
     @PutMapping("{id}/click-history")
     public ResponseEntity<?> addToClickHistory(@RequestBody int projectId, @PathVariable String id){
-        if(!(userService.addToClickHistory(projectId, id))){
-          return ResponseEntity.notFound().build();
-        };
+        userService.addToClickHistory(projectId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -253,22 +291,33 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing changed",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "Provided user ID does not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}/description")
     public ResponseEntity<?> changeDescription(@RequestBody String[] description, @PathVariable String id){
-        if(description.length != 1)new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(description.length != 1)return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         userService.changeDescription(description, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @Operation(summary = "Updates currently logged in user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "204",
                     description = "The user has been updated",
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
+            @ApiResponse(responseCode = "404",
+                    description = "User not found",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("update")
     public ResponseEntity<?> updateByJwt(@RequestBody UserPostDTO userPostDTO, @AuthenticationPrincipal Jwt jwt) {
@@ -290,12 +339,13 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The specified user does not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable String id){
-        if (userService.findById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!userService.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -308,7 +358,8 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The specified user does not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("delete")
     public ResponseEntity<?> deleteByJwt(@AuthenticationPrincipal Jwt jwt){
@@ -322,6 +373,16 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Toggle logged in user's hidden status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User's hidden status has been updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "The specified user does not exist",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
+    })
     @PatchMapping("hidden")
     public ResponseEntity<?> toggleHiddenStatus(@AuthenticationPrincipal Jwt jwt){
         String uid = jwt.getClaimAsString("sub");
