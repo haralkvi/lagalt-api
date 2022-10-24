@@ -32,3 +32,76 @@ VALUES ('2017-05-09',4,2);
 INSERT INTO application (time, project_id, user_id)
 VALUES ('2019-07-09',4,3);
 
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'guitar');
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'football');
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'java');
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'python');
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'programming');
+INSERT INTO  user_skill_set (user_user_id, skill_set)
+VALUES ('1', 'react');
+
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'backend');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'spring');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'hibernate');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'sql');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'design');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('2', 'maths');
+
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'guitar');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'drums');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'bass');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'singing');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'art');
+INSERT INTO user_skill_set (user_user_id, skill_set)
+VALUES ('3', 'design');
+
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'frontend');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'programming');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'react');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'angular');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'UX');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (1, 'design');
+
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (2, 'guitar');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (2, 'oboe');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (2, 'flute');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (2, 'drums');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (2, 'leadership');
+
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (3, 'backend');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (3, 'database');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (3, 'java');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (3, 'design');
+INSERT INTO project_skills_needed (project_project_id, skills_needed)
+VALUES (3, 'spring');

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -122,7 +123,30 @@ public class UserController {
         User user = userService.findById(jwt.getClaimAsString("sub"));
 
         if (user != null) {
-            Collection<ProjectGetDTO> recommendedProjects =
+            List<ProjectGetDTO> recommendedProjects =
+                    projectMapper.projectToProjectDTO(
+                            userService.findRecommendations(user)
+                    ).stream().toList();
+            return new ResponseEntity<>(recommendedProjects, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }    @Operation(summary = "Get current user's recommended projects")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Recommended projects have successfully been fetched",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Specified user not found",
+                    content = @Content)
+    })
+    @GetMapping("{id}/recommendations")
+    public ResponseEntity<?> getUserRecommendations(@PathVariable String id) {
+        User user = userService.findById(id);
+
+        if (user != null) {
+            List<ProjectGetDTO> recommendedProjects =
                     projectMapper.projectToProjectDTO(
                             userService.findRecommendations(user)
                     );
