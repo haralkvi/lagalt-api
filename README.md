@@ -20,6 +20,7 @@ Lagalt gruppen består av:
 - Sevde Oguz
 - Harald Kvisli
 - Marius Olafsen
+
 De to sistnevnte var involvert i utvikling av dette API (backend-team).
 
 ### Deployment
@@ -55,4 +56,5 @@ The group involved with making this project:
 - Sevde Oguz
 - Harald Kvisli
 - Marius Olafsen
+
 The last two mentioned was part of the backend team and therefore made this API.
