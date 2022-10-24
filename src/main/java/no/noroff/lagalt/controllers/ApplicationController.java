@@ -2,10 +2,12 @@ package no.noroff.lagalt.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.get.ApplicationGetDTO;
 import no.noroff.lagalt.dtos.post.ApplicationPostDTO;
+import no.noroff.lagalt.exceptions.ApiErrorResponse;
 import no.noroff.lagalt.exceptions.ApplicationNotFoundException;
 import no.noroff.lagalt.mappers.ApplicationMapper;
 import no.noroff.lagalt.models.Application;
@@ -33,10 +35,12 @@ public class ApplicationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "All applications received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Application.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "No applications found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -52,10 +56,12 @@ public class ApplicationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The application has been received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Application.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified application not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
@@ -74,10 +80,12 @@ public class ApplicationController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Provided user or project not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ApplicationPostDTO inputApplication) {
@@ -96,10 +104,12 @@ public class ApplicationController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Malformed body, nothing received",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}")
     public ResponseEntity<Application> update(@RequestBody Application application, @PathVariable int id) {
@@ -122,7 +132,8 @@ public class ApplicationController {
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The specified application does not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {

@@ -2,11 +2,13 @@ package no.noroff.lagalt.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import no.noroff.lagalt.dtos.get.ProjectGetDTO;
 import no.noroff.lagalt.dtos.post.ProjectPostDTO;
 import no.noroff.lagalt.dtos.put.ProjectPutDTO;
+import no.noroff.lagalt.exceptions.ApiErrorResponse;
 import no.noroff.lagalt.exceptions.ProjectNotFoundException;
 import no.noroff.lagalt.exceptions.UserNotFoundException;
 import no.noroff.lagalt.mappers.ProjectMapper;
@@ -42,10 +44,12 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "All projects received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ProjectGetDTO.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Projects not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -61,10 +65,12 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "The project has been received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ProjectGetDTO.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Specified project not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
@@ -79,10 +85,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing created",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "No such user ID",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping
     public ResponseEntity<?> add(@RequestBody ProjectPostDTO projectInput) {
@@ -90,7 +98,7 @@ public class ProjectController {
         
         userService.addMembers(new String[]{project.getOwner().getId()}, project.getId());
 
-        if (project != null) {
+        if (project.getId() != 0) {
             URI location = URI.create("projects/" + project.getId());
             return ResponseEntity.created(location).build();
         }
@@ -105,10 +113,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body, nothing received",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Project not found with supplied ID",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}")
     public ResponseEntity<?> update(@RequestBody ProjectPutDTO project, @PathVariable int id) {
@@ -126,7 +136,8 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "404",
                     description = "The specified project does not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
@@ -141,10 +152,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed request",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "The project or user with provided IDs do not exist",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{projectId}/add-member")
     public ResponseEntity<?> addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable int projectId) {
@@ -166,10 +179,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed request",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Project or user not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PostMapping("{id}/members")
     public ResponseEntity<?> addMember(@RequestBody String[] members, @PathVariable int id) {
@@ -191,10 +206,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed request",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Project or user has not been found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @DeleteMapping("{id}/members")
     public ResponseEntity<?> removeMember(@RequestBody String[] members, @PathVariable int id) {
@@ -216,10 +233,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Project not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}/tags")
     public ResponseEntity<?> addTags(@RequestBody String[] tags, @PathVariable int id) {
@@ -238,10 +257,12 @@ public class ProjectController {
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Malformed body",
-                    content = @Content),
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) }),
             @ApiResponse(responseCode = "404",
                     description = "Project not found",
-                    content = @Content)
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiErrorResponse.class)) })
     })
     @PutMapping("{id}/needed-skills")
     public ResponseEntity<?> updatedSkills(@RequestBody String[] skills, @PathVariable int id) {
