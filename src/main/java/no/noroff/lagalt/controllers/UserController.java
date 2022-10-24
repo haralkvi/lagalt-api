@@ -28,7 +28,11 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = {
+                "https://sheltered-inlet-34111.herokuapp.com",
+                "http://localhost:3000/"
+        })
 @RestController
 @RequestMapping(path = "api/v1/users")
 public class UserController {
