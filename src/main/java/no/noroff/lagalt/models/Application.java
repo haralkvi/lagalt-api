@@ -29,7 +29,7 @@ public class Application {
 
     @Column(nullable = false)
     @Timestamp
-    public LocalDate time;
+    public String time;
 
     @Column(name = "motivational_text")
     public String text;
