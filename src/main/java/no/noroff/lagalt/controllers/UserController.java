@@ -30,7 +30,7 @@ import java.util.List;
 
 @CrossOrigin(
         origins = {
-                "beste-lagalt.herokuapp.com",
+                "https://beste-lagalt.herokuapp.com/",
                 "http://localhost:3000/"
         })
 @RestController

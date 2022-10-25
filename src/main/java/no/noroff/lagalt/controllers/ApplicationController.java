@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.Collection;
 @CrossOrigin(
         origins = {
-                "beste-lagalt.herokuapp.com",
+                "https://beste-lagalt.herokuapp.com/",
                 "http://localhost:3000/"
         })
 @RestController
