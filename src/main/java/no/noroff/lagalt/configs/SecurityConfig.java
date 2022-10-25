@@ -23,6 +23,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Everyone gets to access endpoints for fetching projects
                         .mvcMatchers(HttpMethod.GET, "/api/v1/projects/**").permitAll()
+                        .mvcMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-resources/configuration/ui",
+                                "/swagger-resources",
+                                "/swagger-resources/configuration/security",
+                                "/swagger-ui/**",
+                                "/webjars/**"
+                        ).permitAll()
                         // Other endpoints may only be accessed by authenticated users
                         .anyRequest().authenticated()
                 )
