@@ -22,7 +22,7 @@ public class User {
     @Column(name = "user_email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "user_description")
+    @Column(name = "user_description", columnDefinition = "text")
     private String description;
 
     @ElementCollection
