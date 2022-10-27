@@ -44,7 +44,7 @@ public class Project {
     @ElementCollection
     private Set<String> skillsNeeded;
 
-    @Column(name="summary")
+    @Column(name="summary", columnDefinition = "text")
     private String summary;
 
     @OneToMany(mappedBy = "project")
