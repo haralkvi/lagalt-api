@@ -15,14 +15,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and()
-                // Sessions will not be used
                 .sessionManagement().disable()
-                // Disable CSRF -- not necessary when there are no sessions
                 .csrf().disable()
                 // Enable security for http requests
                 .authorizeHttpRequests(authorize -> authorize
                         // Everyone gets to access endpoints for fetching projects
                         .mvcMatchers(HttpMethod.GET, "/api/v1/projects/**").permitAll()
+                        // Allows access to overview of documented API endpoints through swagger
                         .mvcMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-resources/configuration/ui",
